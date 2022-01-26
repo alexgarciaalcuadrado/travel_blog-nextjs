@@ -9,7 +9,6 @@ const blog = (props) => {
     const editPath = "/home/" + router.query.blogId + "/edit";
 
     const [isCreator, setIsCreator] = useState(false)
-    console.log(props.blog)
 
     useEffect(() => {
         if(typeof window !== "undefined") {
@@ -46,7 +45,7 @@ const blog = (props) => {
     return (
         <Fragment>
             <Navbar />
-        <div key={props.blog.id}>
+            <div>
             <h3>{props.blog.title}</h3>
             <p>{props.blog.description}</p>
             {isCreator && creatorActions()}

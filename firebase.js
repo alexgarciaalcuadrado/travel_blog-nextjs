@@ -21,16 +21,16 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 const db = getFirestore();
-const colRef = collection(db, "users")
+const blogsColRef = collection(db, "blogs")
+const usersColRef = collection(db, "users")
 const auth = getAuth();
-
 
 ///AUTH FUNCTIONS
 
 const createAccount = (values) => {
   createUserWithEmailAndPassword(auth, values.email, values.password)
   .then((cred) => {
-    localStorage.setItem("user", cred.user.uid)
+    localStorage.setItem("user", cred.user.uid);
   })
   .catch(err => {
     console.log(err.message)
@@ -41,8 +41,7 @@ const createAccount = (values) => {
 const signUserOut = () => {
   signOut(auth)
   .then(() => {
-    console.log("user sign out")
-
+    localStorage.removeItem("user");
   })
   .catch((err) => {
     console.log(err)
@@ -53,17 +52,18 @@ const signUserOut = () => {
 const signUserIn = (values) => {
   signInWithEmailAndPassword(auth, values.email, values.password)
   .then((cred) => {
-    localStorage.setItem("user", cred.user.uid)
+    localStorage.setItem("user", cred.user.uid);
+
   })
   .catch((err) => {
   })
 }
 
 
-///DB FUNCTIONS
+///DB FUNCTIONS FOR BLOGS
 
 const addBlog = (blog) => {
-  addDoc(colRef, {
+  addDoc(blogsColRef, {
             creatorId : blog.creatorId,
             blogId : blog.blogId,
             title : blog.title,
@@ -74,14 +74,32 @@ const addBlog = (blog) => {
 }
 
 const deleteBlog = (blog) => {
-  const docRef = doc(db, "users", blog.docId);
+  const docRef = doc(db, "blogs", blog.docId);
   deleteDoc(docRef);
 }
 
 const updateBlog = (blog, updates) => {
-  const docRef = doc(db, "users", blog.docId);
+  const docRef = doc(db, "blogs", blog.docId);
   updateDoc(docRef, updates)
 }
 
-export {createAccount, signUserOut, signUserIn, auth, colRef,
-        addBlog, deleteBlog, updateBlog}
+/// DB FUNCTIONS FOR USERS
+
+const addUserProfileInfo = (user) => {
+    addDoc(usersColRef, {
+      userId : user.userId,
+      username : user.username,
+      userDescription : user.userDescription,
+      profilePicture : user.profilePicture          
+    } ) 
+  
+}
+
+const updateProfile = (docId, updates) => {
+  const docRef = doc(db, "users", docId);
+  updateDoc(docRef, updates)
+}
+
+export {createAccount, signUserOut, signUserIn, auth, blogsColRef,
+        addBlog, deleteBlog, updateBlog, addUserProfileInfo, usersColRef,
+        updateProfile}

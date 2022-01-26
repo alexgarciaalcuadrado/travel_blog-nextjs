@@ -3,6 +3,7 @@ import Link from "next/link";
 
 const BlogRender = ({ blog }) => {
     const path = "/home/" + blog.blogId;
+
     return (
         <div key={blog.blogId}>
             <h3>{blog.title}</h3>

@@ -1,6 +1,6 @@
 import {Fragment, useState, useEffect} from "react";
 import { onSnapshot } from 'firebase/firestore';
-import { colRef } from "../firebase";
+import { blogsColRef } from "../firebase";
 import Navbar from "../components/navbar/navbar";
 import BlogRender from "../components/blogRender/blogRender";
 
@@ -10,7 +10,7 @@ const Home = () => {
 
     useEffect(() => { 
         let isMounted = true; 
-                onSnapshot(colRef, (snapshot) => { 
+                onSnapshot(blogsColRef, (snapshot) => { 
                 if (isMounted) {
                 const blogs = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
                 setBlogs(blogs) 

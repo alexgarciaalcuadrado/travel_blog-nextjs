@@ -83,7 +83,7 @@ const Login = () => {
             }}
             onSubmit={(values) => {
                 createAccount(values);
-                router.push("/")
+                router.push("/profile")
             }}
         >
         {({

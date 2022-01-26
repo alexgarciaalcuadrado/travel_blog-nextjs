@@ -18,6 +18,8 @@ const CreateBlog = () => {
     });
 
     useEffect(() => {
+        let isMounted = true; 
+        if(isMounted){
         if(typeof window !== "undefined") {
             if(localStorage.getItem("user")){
                 setUserId(localStorage.getItem("user"))
@@ -31,6 +33,10 @@ const CreateBlog = () => {
             setIsSubmited(false);
             router.push("/"); 
         }
+        }
+
+        return () => { isMounted = false };
+
     }, [isSubmited, newBlog])
 
     const submitHandler = (e) => {
@@ -43,6 +49,7 @@ const CreateBlog = () => {
             "image" : e.target.image.value
         })
         setIsSubmited(true)
+        
     }
 
 
