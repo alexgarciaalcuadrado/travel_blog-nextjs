@@ -1,0 +1,38 @@
+.navbarCustom{
+    background: rgb(229,252,225);
+    background-image:  linear-gradient(276deg, rgba(229,252,225,1) 0%, rgba(229,252,225,1) 49%, rgba(229,252,225,1) 100%);
+
+    &__brand{
+        font-size: 2rem;
+        background: rgb(67,93,255);
+        background: linear-gradient(276deg, rgba(67,93,255,1) 0%, rgba(60,255,168,1) 60%, rgba(59,251,27,1) 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+
+    &__anchor{
+        display: inline-block;
+        color: inherit;
+        text-decoration: none;
+        padding: 0 1rem;
+
+        &::after{
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #70e000;
+            transition: width .3s;
+        }
+
+        &:hover::after{
+            width: 100%;
+        }
+
+        &:hover{
+            color: inherit;
+        }
+    }
+}

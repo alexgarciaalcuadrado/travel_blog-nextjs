@@ -1,0 +1,15 @@
+.layout{
+    background: url(../public/backgroundImage.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    text-align: -webkit-center;
+    font-family: 'Raleway', sans-serif;
+    height: 100vh;
+    padding: 1rem 2rem;
+
+    h1{
+        font-style: italic;
+    }
+}

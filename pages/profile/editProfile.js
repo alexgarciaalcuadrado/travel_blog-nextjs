@@ -1,15 +1,18 @@
 import { useEffect, useState, Fragment } from "react";
 import { useRouter } from "next/router";
-import { addUserProfileInfo, usersColRef, updateProfile } from "../../firebase";
+import { ref, uploadBytes, getDownloadURL, uploadString } from "firebase/storage";
+import { addUserProfileInfo, usersColRef, updateProfile, storage } from "../../firebase";
 import { onSnapshot, query, where  } from 'firebase/firestore';
+import notProfilePicture from "../../public/blank-user-photo.png"
 import Navbar from "../../components/navbar/navbar";
 
 const EditProfile = () => {
     const router = useRouter();
+    const [userId, setUserId] = useState("");
+    const [loading, setLoading] = useState(false);
     const [isSubmitedFirstTime, setisSubmitedFirstTime] = useState(false);
     const [isSubmitedEdit, setIsSubmitedEdit] = useState(false);
     const [prevProfileExist, setPrevProfileExist] = useState(false);
-    const [userId, setUserId] = useState("");
     const [editProfileData, setEditProfileData] = useState({
         "userId" : "",
         "username" : "",
@@ -22,8 +25,10 @@ const EditProfile = () => {
         "userDescription" : "",
         "profilePicture" : ""
     });
+    const [userImage, setUserImage] = useState("");
     const [username, setUsername] = useState("");
     const [userDescription, setUserDescription] = useState("");
+    const [imageUrl, setImageUrl] = useState("");
 
     useEffect(() => {
         let isMounted = true;
@@ -34,51 +39,64 @@ const EditProfile = () => {
                 }
                 if(isSubmitedFirstTime === true){
                     addUserProfileInfo(profileData);
-                    setisSubmitedFirstTime(false);
-                }
-                /* if(isSubmitedEdit === true){
-                    //updateProfile(editProfileData.docId, editProfileData)
+                    setProfileData({
+                        "userId" : userId,
+                        "username" : username,
+                        "userDescription" : userDescription,
+                        "profilePicture" : notProfilePicture.src
+                    });
                     
+                    setisSubmitedFirstTime(false);
+                    router.push("/profile");
+                }
+                if(isSubmitedEdit === true){
+                    setEditProfileData({
+                        "userId" : userId,
+                        "username" : username,
+                        "userDescription" : userDescription,
+                        "profilePicture" : notProfilePicture.src
+                    });
+                    updateProfile(editProfileData.docId, editProfileData);
                     setIsSubmitedEdit(false);
-                } */
-        }
+                    router.push("/profile");
+                }
 
-        const q = query(usersColRef, where("userId", "==", userId));
-        onSnapshot(q, (snapshot) => { 
-            const user = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
-            if (user.length){
-                setEditProfileData(user[0]);
-                setPrevProfileExist(true);
-            }
-             
-        });
-        
+                const q = query(usersColRef, where("userId", "==", userId));
+                onSnapshot(q, (snapshot) => { 
+                    const user = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
+                    if (user.length){
+                        setEditProfileData(user[0]);
+                        setPrevProfileExist(true);
+                    }
+                     
+                });
+        }
     }
-    },[userId, profileData, isSubmitedFirstTime, isSubmitedEdit]);
+    },[userId, profileData, isSubmitedFirstTime, isSubmitedEdit, imageUrl]);
+
 
     const onSubmitEditProfile = (e) => {
         e.preventDefault();
-        setEditProfileData({
-            "userId" : userId,
-            "username" : username,
-            "userDescription" : userDescription,
-            "profilePicture" : e.target.profilePicture.value
-        });
+        /* const fileRef = ref(storage, `/profImages/${userId}`);
+        uploadBytes(fileRef, userImage).then(
+            getDownloadURL(fileRef).then(url => {
+                setImageUrl(url);
+            }).catch(err => { console.log(err) })    
+        ).catch(err => { console.log(err) }); */
         setIsSubmitedEdit(true);
-        updateProfile(editProfileData.docId, editProfileData)
-        router.push("/profile")
+                
     }
 
     const onSubmitFirstTimeUser = (e) => {
         e.preventDefault();
-        setProfileData({
-            "userId" : userId,
-            "username" : username,
-            "userDescription" : userDescription,
-            "profilePicture" : e.target.profilePicture.value
-        });
-        setisSubmitedFirstTime(true)
-        router.push("/profile")
+        /* const fileRef = ref(storage, `/profImages/${userId}`);
+        uploadBytes(fileRef, userImage).then(
+            getDownloadURL(fileRef).then(url => {
+                setImageUrl(url);
+            }).catch(err => { console.log(err) })    
+        ).catch(err => { console.log(err) }); */
+        
+        setisSubmitedFirstTime(true);    
     }
 
     const onChangeHandlerUsername = (e) => {
@@ -103,11 +121,20 @@ const EditProfile = () => {
         }
     }
 
+    const onChangeHandleProfilePicture = (e) => {
+        if(e.target.files[0]){
+            setUserImage(e.target.files[0]);
+        } else {
+            setUserImage(notProfilePicture.src);
+        }
+    }
+
 
     return(
         <Fragment>
             <Navbar />
             <div>
+            {loading === true && <p>Loading</p>}
             <h3>Edit your profile</h3>
             <form onSubmit={prevProfileExist ? onSubmitEditProfile : onSubmitFirstTimeUser}>
                 <label>Your username</label>
@@ -115,7 +142,7 @@ const EditProfile = () => {
                 <label>Tell us about yourself</label>
                 <input type="text" name="userDescription" onChange={onChangeHandlerDescription} value={editProfileData.userDescription != "" ? editProfileData.userDescription : userDescription}></input>
                 <label>Add a profile picture</label>
-                <input type="file" name="profilePicture"></input>
+                <input type="file" name="profilePicture" onChange={onChangeHandleProfilePicture}></input>
                 <button>Submit</button>
             </form>
             </div>

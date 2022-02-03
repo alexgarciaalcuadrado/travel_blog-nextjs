@@ -5,10 +5,9 @@ import {
   signOut,
   signInWithEmailAndPassword
 } from "firebase/auth";
+import { getStorage, ref, uploadBytes, getDownloadURL, uploadString } from "firebase/storage";
 import { addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { getFirestore, collection } from 'firebase/firestore';
-
-
 
 const firebaseConfig = {
   apiKey: "AIzaSyDFVVbAjiedl5jdYwwb7nMNhcVCM-cYIfY",
@@ -19,11 +18,15 @@ const firebaseConfig = {
   appId: "1:385953620096:web:c703289d373d190b8e8665"
 };
 
+
 initializeApp(firebaseConfig);
 const db = getFirestore();
-const blogsColRef = collection(db, "blogs")
-const usersColRef = collection(db, "users")
+const blogsColRef = collection(db, "blogs");
+const usersColRef = collection(db, "users");
+
 const auth = getAuth();
+
+const storage = getStorage();
 
 ///AUTH FUNCTIONS
 
@@ -41,7 +44,6 @@ const createAccount = (values) => {
 const signUserOut = () => {
   signOut(auth)
   .then(() => {
-    localStorage.removeItem("user");
   })
   .catch((err) => {
     console.log(err)
@@ -53,7 +55,7 @@ const signUserIn = (values) => {
   signInWithEmailAndPassword(auth, values.email, values.password)
   .then((cred) => {
     localStorage.setItem("user", cred.user.uid);
-
+    
   })
   .catch((err) => {
   })
@@ -100,6 +102,9 @@ const updateProfile = (docId, updates) => {
   updateDoc(docRef, updates)
 }
 
+
+
+
 export {createAccount, signUserOut, signUserIn, auth, blogsColRef,
         addBlog, deleteBlog, updateBlog, addUserProfileInfo, usersColRef,
-        updateProfile}
+        updateProfile, storage}
