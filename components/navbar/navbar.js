@@ -20,7 +20,7 @@ const Navbar = () => {
     }, [authUser, loading])
 
     const signOut = () => {
-        signUserOut();
+        signUserOut(); 
         localStorage.removeItem("user");
         router.push("/");
     }

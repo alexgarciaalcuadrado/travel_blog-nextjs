@@ -1,0 +1,25 @@
+@import "../../styles/mixin.scss";
+
+.home{
+    margin-bottom: 6rem;
+    text-align: center;
+
+    span{
+        font-style: normal;
+        background: rgb(0,155,255);
+        background: linear-gradient(87deg, rgba(0,155,255,1) 0%, rgba(60,255,184,1) 45%, rgba(57,235,28,1) 100%);
+        @include text-gradient;
+    }
+
+    h1{
+        font-weight: 100;
+        font-size: 4rem;
+        padding: 1rem;
+    }
+
+    h3{
+        font-weight: 400;
+        letter-spacing: 2px;
+        line-height: 3rem;
+    }
+}

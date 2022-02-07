@@ -1,4 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css';
+import "../styles/mixin.scss";
+import "../styles/variables.scss";
 import "../styles/global.scss";
 import { useEffect, Fragment } from "react";
 import { AuthUserProvider } from "../auth/authUserProvider";

@@ -1,0 +1,48 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixin.scss";
+
+.profile{
+    text-align: start;
+    
+
+    h4{
+        font-style: italic;
+    }
+
+    h6{
+        line-height: $line-height;
+    }
+
+    &__top{
+        display: flex;
+        align-items: center;
+
+        img{
+            border-radius: 100%;
+            padding: 1rem;
+            height: 13rem;
+            width: 13rem;
+        }
+
+        &__name{
+            
+            h3{
+                background: rgb(0,0,0);
+                background: linear-gradient(87deg, rgba(0,0,0,1) 0%, rgba(12,62,53,1) 45%, rgba(3,117,124,1) 100%);
+                @include text-gradient;
+                font-size: 4rem;
+                font-weight: 100;
+                font-style: italic;
+                border-bottom: solid 1px;
+                border-color: $primary-green-color;
+            }
+        }
+    }
+
+    button{
+        position: relative;
+        left: 90%;
+        margin: 1rem;
+    }
+    
+}

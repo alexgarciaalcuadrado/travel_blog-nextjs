@@ -54,17 +54,22 @@ const CreateBlog = () => {
 
 
     return(
-        <div>
-            <Navbar />
-            <h1>Write your experience</h1>
+        <div className="page-background">
+            <h1 className="display-6 gradient__green__underline text-center">Write your experience</h1>
             <form onSubmit={submitHandler}>
-                <label name="title">Title of your post</label>
-                <input type="text" name="title"></input>
-                <label name="description">Your story</label>
-                <input type="text" name="description"></input>
-                <label name="image">Add an image</label>
-                <input type="file" name="image"></input>
-                <button>Submit</button>
+            <div className="mb-3">
+                <label className="form-label fw-bold" name="title">Title of your post</label>
+                <input className="form-control" type="text" name="title"></input>
+            </div>
+            <div className="mb-3">
+                <label className="form-label  fw-bold">Your story</label>
+                <textarea className="form-control" rows="5" type="text" name="description" ></textarea>
+            </div>
+            <div className="mb-3">
+                <label className="form-label fw-bold">Add an image</label>
+                <input className="form-control" type="file" name="image"></input>
+            </div>
+            <button className="btn btn-success">Submit</button>
             </form>
         </div>
     )

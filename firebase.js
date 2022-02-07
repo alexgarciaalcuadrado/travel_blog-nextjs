@@ -80,8 +80,8 @@ const deleteBlog = (blog) => {
   deleteDoc(docRef);
 }
 
-const updateBlog = (blog, updates) => {
-  const docRef = doc(db, "blogs", blog.docId);
+const updateBlog = (docId, updates) => {
+  const docRef = doc(db, "blogs", docId);
   updateDoc(docRef, updates)
 }
 

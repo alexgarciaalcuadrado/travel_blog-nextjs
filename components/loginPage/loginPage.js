@@ -7,6 +7,7 @@ import styles from "../loginPage/loginPage.module.scss";
 
 const Login = () => {
     const router = useRouter();
+    const [userId, setUserId] = useState("");
     const [accountCreated, setAccountCreated] = useState(false);
     const [accountLogged, setAccountLogged] = useState(false);
 
@@ -14,10 +15,22 @@ const Login = () => {
     useEffect(() => {
         let isMounted = true;
         if(isMounted === true){
+            if(typeof window !== "undefined") {
+                if(localStorage.getItem("user")){
+                    setUserId(localStorage.getItem("user"))
+                }
+            }
             if(accountCreated === true){
-                setTimeout(() => {router.push("/profile")}, 2000);
+                if(userId != ""){
+                    setTimeout(() => {router.push("/profile")}, 2000);
+                }
+                
             } else if (accountLogged === true){
-                setTimeout(() =>{ router.push("/")}, 2000);
+                if(userId != ""){
+                    setTimeout(() =>{ router.push("/")}, 2000);
+                } else {
+                    console.log("user does not exist");
+                }
                 
             }
         }
@@ -30,9 +43,10 @@ const Login = () => {
 
 
     return (
+        <div className={styles.container}>
         <div className={styles.login}>
         <div className={styles.login__forms}>
-        <h1>Sign in</h1>
+        <h1 className="gradient__green__underline">Sign in</h1>
         <Formik
            initialValues={{ email: '', password: ''}}
            validate={values => {
@@ -52,7 +66,7 @@ const Login = () => {
                 signUserIn(values);
                 setAccountLogged(true);
             }}
-        >
+        > 
         {({
          values,
          errors,
@@ -103,7 +117,7 @@ const Login = () => {
         </div>
 
         <div className={styles.login__forms}>
-        <h1>Don't have an account? Create one!</h1>
+        <h1 className="gradient__green__underline">Don't have an account? Create one!</h1>
         <Formik
             initialValues={{ email: '', password: ''}}
             validate={values => {
@@ -175,6 +189,7 @@ const Login = () => {
         </Formik>
         </div>
         </div>
+    </div>
     )
 }
 

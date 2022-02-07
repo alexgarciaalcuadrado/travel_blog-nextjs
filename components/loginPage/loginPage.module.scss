@@ -1,3 +1,8 @@
+.container{
+    display: flex;
+    justify-content: center;
+}
+
 .login{
     background-color: #f8fff8;
     text-align: center;
@@ -6,12 +11,6 @@
     width: fit-content;
     padding: 3rem;
     border-radius: 20px;
-
-    h1{
-        margin-bottom: 1rem;
-        border-bottom: solid 1px;
-        border-image: linear-gradient(276deg, rgba(248,255,248,0) 0%, rgba(0,255,0,1) 51%, rgba(59,251,27,0) 100%) 27;
-    }
 
     &__forms{
         padding: 3rem 0;

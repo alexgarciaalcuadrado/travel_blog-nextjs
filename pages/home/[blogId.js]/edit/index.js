@@ -1,13 +1,15 @@
-import { Fragment, useEffect, useState } from "react"
+import { Fragment, useEffect, useState } from "react";
+import { useAuth } from "../../../../auth/authUserProvider";
+import { onSnapshot, query, where } from 'firebase/firestore';
+import { blogsColRef} from "../../../../firebase";
 import { useRouter } from "next/router";
-import Navbar from "../../../../components/navbar/navbar";
 import { updateBlog } from "../../../../firebase";
 
 const Edit = (props) => {
     const router = useRouter();
-    const [titleValue, setTitleValues] = useState(props.blog.title)
-    const [descriptionValue, setDescriptionValues] = useState(props.blog.description)
+    const { authUser, loading } = useAuth();
     const [isSubmited, setIsSubmited] = useState(false);
+    const [blog, setBlog] = useState([]);
     const [newBlog, setNewBlog] = useState({
         "title" : "",
         "description" : "",
@@ -15,12 +17,25 @@ const Edit = (props) => {
     });
 
     useEffect(() => {
+        let isMounted = true;
+        if(isMounted){
+        if (!loading && !authUser) router.push('/');
+        const qBlog = query(blogsColRef, where("blogId", "==", props.blogId.blogId));
+        onSnapshot(qBlog, (snapshot) => { 
+            const blog = snapshot.docs.map((doc) => {
+                return {...doc.data(), docId : doc.id }
+            });
+            setBlog(blog[0]);
+        }); 
+
         if(isSubmited){
-            updateBlog(props.blog, newBlog);
+            updateBlog(blog.docId, newBlog);
             setIsSubmited(false);
             router.push("/"); 
         }
-    }, [isSubmited])
+    }
+    return () => { isMounted = false };
+    }, [isSubmited, authUser]);
 
     const handleOnSubmit = (e) => {
         console.log(e.target.title.value)
@@ -31,21 +46,43 @@ const Edit = (props) => {
             "image" : e.target.image.value
         })
         setIsSubmited(true)
-    }
+    };
+
+    const onChangeHandlerTitle = (e) => {
+        setBlog({
+            ...blog,
+            "title" : e.target.value
+        });
+    };
+
+    const onChangeHandlerStory = (e) => {
+        setBlog({
+            ...blog,
+            "description" : e.target.value
+        });
+    };
 
     return (
         <Fragment>
-            <Navbar />
-            <h1>Edit your post</h1>
-            <form onSubmit={handleOnSubmit}>
-                <label>Edit your title</label>
-                <input type="text" name="title" onChange={e => setTitleValues(e.target.value)} value={titleValue}></input>
-                <label>Edit your story</label>
-                <input type="text" name="description" onChange={e => setDescriptionValues(e.target.value)} value={descriptionValue}></input>
-                <label name="image">Add another image</label>
-                <input type="file" name="image"></input>
-                <button>Submit</button>
-            </form>
+            <div className="page-background">
+                <h1 className="display-6 gradient__green__underline text-center">Edit your post</h1>
+                <form onSubmit={handleOnSubmit}>
+                <div className="mb-3">
+                    <label className="form-label fw-bold">Edit your title</label>
+                    <input className="form-control" type="text" name="title" onChange={onChangeHandlerTitle} value={blog.title}></input>
+                </div>
+                <div className="mb-3">
+                    <label className="form-label fw-bold">Edit your story</label>
+                    <input className="form-control" type="text" name="description" onChange={onChangeHandlerStory} value={blog.description}></input>
+                </div>
+                <div className="mb-3">
+                    <label className="form-label fw-bold" name="image">Add another image</label>
+                    <input className="form-control" type="file" name="image"></input>
+                </div>
+                <button className="btn btn-success">Submit</button>
+                </form>
+            </div>
+            
         </Fragment>
     )
 }
@@ -53,7 +90,7 @@ const Edit = (props) => {
 export async function getServerSideProps(context){
     return{
         props : {
-            blog : context.query
+            blogId : context.query
         }
     }
 }
