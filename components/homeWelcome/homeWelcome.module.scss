@@ -1,8 +1,13 @@
 @import "../../styles/mixin.scss";
 
 .home{
-    margin-bottom: 6rem;
+    margin-bottom: 3rem;
     text-align: center;
+
+    @include breakpoint(screen-small){
+        background: url(../../public/backgroundImagePhoneSize.jpg) no-repeat center center fixed;
+        @include background-image-setting;
+    }
 
     span{
         font-style: normal;
@@ -15,11 +20,26 @@
         font-weight: 100;
         font-size: 4rem;
         padding: 1rem;
+
+        @include breakpoint(screen-medium){
+            font-size: 3rem;
+            padding: 0;
+        }
+
+        @include breakpoint(screen-small){
+            color: white;
+        }
     }
 
     h3{
         font-weight: 400;
         letter-spacing: 2px;
         line-height: 3rem;
+
+        @include breakpoint(screen-small){
+            line-height: 2.5rem;
+            color: white;
+            padding: 10px;
+        }
     }
 }

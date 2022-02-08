@@ -46,6 +46,9 @@ const Profile = () => {
         }); 
         }
         
+        if(profileCreated === false){
+            setIsLoading(false);
+        }
         
         return () => { isMounted = false };
 
@@ -67,11 +70,12 @@ const Profile = () => {
             } else {
                 return (
                     <div className="page-background-setted-height">
-                        <div className={styles.profile}>
-                            <h3>Create your profile</h3>
-                            <button onClick={renderEdit} className="btn btn-dark">Create</button>  
+                        <span className={styles.profile__title}>My profile</span> 
+                        <hr className={styles.profile__title__hr}></hr>
+                        <div className={styles.profile__createAcount}>
+                            <h3 className={styles.profile__createAcount__item}>Create your profile</h3>
+                            <button onClick={renderEdit} className={`btn btn-dark ${styles.profile__createAcount__item}`}>Create</button>  
                         </div>
-                        
                     </div>
                 )
             }
@@ -79,22 +83,28 @@ const Profile = () => {
         } else {
             if(isLoading === true){
                 return (
-                    <p>Loading</p>
+                    <div className="page-background-setted-height">
+                        <p>Loading</p>
+                    </div>
+                    
                 )
             } else {
                 return(
                     <div className="page-background">
                         <div className={styles.profile}>
+                        <span className={styles.profile__title}>My profile</span> 
+                        <hr className={styles.profile__title__hr}></hr>
                             <div className={styles.profile__top}>
                                 <img className="" src={userProfile.profilePicture =! "" && defaultUserPhoto.src}/>
                                 <div className={styles.profile__top__name}>
                                     <div><h3>{userProfile.username}</h3></div>
                                 </div> 
                             </div>
-                            
                             <h4>About me...</h4>
                             <h6>{userProfile.userDescription}</h6>
-                            <button onClick={renderEdit} className="btn btn-dark">Edit profile</button>
+                            <div className={styles.profile__actions}>
+                                <button onClick={renderEdit} className="btn btn-dark">Edit profile</button>
+                            </div>
                         </div>
                     </div>
                 )

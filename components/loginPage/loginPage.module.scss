@@ -1,6 +1,12 @@
+@import "../../styles/mixin.scss";
+
 .container{
     display: flex;
     justify-content: center;
+
+    @include breakpoint(screen-small){
+        display: inline-block;
+    }
 }
 
 .login{
@@ -12,8 +18,27 @@
     padding: 3rem;
     border-radius: 20px;
 
+    @include breakpoint(screen-medium-small){
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    @include breakpoint(screen-small){
+        padding: 0;
+        margin: 0;
+        border-radius: 0;
+    }
+
     &__forms{
         padding: 3rem 0;
+
+        @include breakpoint(screen-medium-small){
+            width: 18rem;
+        }
+
+        @include breakpoint(screen-small){
+            width: 100%;
+        }
     }
 
     &__box{
@@ -25,10 +50,18 @@
         label{
             align-self: flex-start;
             margin-left: 10rem;
+
+            @include breakpoint(screen-big){
+                align-self: center;
+                margin: 0;
+            }
         }
     }
 
     &__input{
         width: 22rem;
+        @include breakpoint(screen-medium-small){
+            width: 12rem;
+        }
     }
 }

@@ -1,7 +1,17 @@
+@import "../styles/variables.scss";
+
 @mixin text-gradient {
     background-clip: text;
     -webkit-background-clip: text;
+    color: transparent;
     -webkit-text-fill-color: transparent;
+}
+
+@mixin background-image-setting{
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 @mixin border-animationg-green{
@@ -21,4 +31,28 @@
     &:hover{
         color: inherit;
     }
+}
+
+//// breakpoint
+@mixin breakpoint($point){
+    @if $point == screen-big{
+        @media (max-width : $screen-big){
+            @content
+        }
+    };
+    @if $point == screen-medium{
+        @media (max-width : $screen-medium){
+            @content
+        }
+    };
+    @if $point == screen-medium-small{
+        @media (max-width : $screen-medium-small){
+            @content
+        }
+    };
+    @if $point == screen-small{
+        @media (max-width : $screen-small){
+            @content
+        }
+    };
 }

@@ -15,25 +15,27 @@ const Login = () => {
     useEffect(() => {
         let isMounted = true;
         if(isMounted === true){
+            
             if(typeof window !== "undefined") {
                 if(localStorage.getItem("user")){
                     setUserId(localStorage.getItem("user"))
                 }
             }
             if(accountCreated === true){
-                if(userId != ""){
-                    setTimeout(() => {router.push("/profile")}, 2000);
-                }
-                
-            } else if (accountLogged === true){
-                if(userId != ""){
-                    setTimeout(() =>{ router.push("/")}, 2000);
+                    setTimeout(() => {
+                        router.push("/profile");
+                    }, 2000); 
+            }  
+            if (accountLogged === true){
+                    setTimeout(() =>{ 
+                        router.push("/");
+                    }, 2000);
                 } else {
                     console.log("user does not exist");
                 }
                 
             }
-        }
+        
         
         return () => {
             clearTimeout()

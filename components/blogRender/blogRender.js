@@ -57,6 +57,7 @@ const BlogRender = () => {
         <div key={blog.blogId} className={`blog`}>
             <div className={`blog__box__user`}>
                 <img className={`blog__profilePicture`} src={userImage}></img>
+                <h3 className={`blog__userCreated`} >Posted by: </h3>
                 <Link href={{ pathname: ""}}><a>{username}</a></Link>
             </div>
             <div className={`blog__box__title`}>

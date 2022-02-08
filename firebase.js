@@ -75,8 +75,8 @@ const addBlog = (blog) => {
   } ) 
 }
 
-const deleteBlog = (blog) => {
-  const docRef = doc(db, "blogs", blog.docId);
+const deleteBlog = (docId) => {
+  const docRef = doc(db, "blogs", docId);
   deleteDoc(docRef);
 }
 

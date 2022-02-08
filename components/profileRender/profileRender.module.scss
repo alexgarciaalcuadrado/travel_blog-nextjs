@@ -3,7 +3,10 @@
 
 .profile{
     text-align: start;
-    
+
+    @include breakpoint(screen-small){
+        padding: 1rem;
+    }
 
     h4{
         font-style: italic;
@@ -13,15 +16,46 @@
         line-height: $line-height;
     }
 
+    &__title{
+        text-align: left;
+        font-weight: 500;
+        letter-spacing: 2px;
+        font-size: 3rem;
+        background: rgb(0,255,248);
+        background: linear-gradient(87deg, rgba(18,140,137,1) 0%, rgba(29,149,89,1) 30%, rgba(80,231,90,1) 72%, rgba(23,255,6,1) 100%);
+        @include text-gradient; 
+
+        @include breakpoint(screen-medium-small){
+            font-size: 2rem;
+        }
+
+        &__hr{
+            background: linear-gradient(87deg, rgba(0,0,0,1) 0%, rgba(23,255,6,0) 100%);
+            height: 3px !important;
+            position: relative;
+            bottom: 1rem;
+        }
+    }
+
     &__top{
         display: flex;
         align-items: center;
+
+        @include breakpoint(screen-medium-small){
+            flex-direction: column;
+            align-items: center;
+        }
 
         img{
             border-radius: 100%;
             padding: 1rem;
             height: 13rem;
             width: 13rem;
+
+            @include breakpoint(screen-medium-small){
+                height: 9rem;
+                width: 9rem;
+            }
         }
 
         &__name{
@@ -35,14 +69,31 @@
                 font-style: italic;
                 border-bottom: solid 1px;
                 border-color: $primary-green-color;
+
+                @include breakpoint(screen-medium-small){
+                    font-size: 3rem;
+                }
             }
         }
     }
 
-    button{
-        position: relative;
-        left: 90%;
-        margin: 1rem;
+    &__actions{
+        display: flex;
+        justify-content: flex-end;
+        button{
+            margin: 1rem 0 ;
+        }
     }
+
+    &__createAcount{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        &__item{
+            margin-top: 1rem;
+        }
+    }
+    
     
 }

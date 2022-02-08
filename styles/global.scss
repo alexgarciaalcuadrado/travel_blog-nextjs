@@ -3,19 +3,26 @@
 
 .layout{
     background: url(../public/backgroundImage.jpg) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    @include background-image-setting;
     font-family: 'Raleway', sans-serif;
     height: max-content;
-    padding: 1rem 2rem;    
+    padding: 1rem 2rem;  
+    
+    @include breakpoint(screen-small){
+        padding: 0;
+        margin: 0;
+    }
 }
 
 .page-background{
     background-color: white;
     border-radius: 5px;
     padding: 2rem;
+
+    @include breakpoint(screen-small){
+        border-radius: 0;
+        padding: 1rem;
+    }
 }
 
 .page-background-setted-height{
@@ -23,6 +30,11 @@
     background-color: white;
     border-radius: 5px;
     padding: 2rem;
+
+    @include breakpoint(screen-small){
+        border-radius: 0;
+        padding: 1rem;
+    }
 }
 
 .blog{
@@ -32,6 +44,24 @@
     grid-column-gap: 3px;
     grid-row-gap: 10px;
 
+    @include breakpoint(screen-small){
+        margin: 1rem;
+    }
+
+    &__userCreated{
+        display: none;
+
+        @include breakpoint(screen-medium-small){
+            display: inline;
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+
+        @include breakpoint(screen-small){
+            margin: 0;
+        }
+    }
+
     &__box{
 
         &__user{
@@ -39,32 +69,108 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+
+            @include breakpoint(screen-medium-small){
+                grid-area: 2/1/2/7;
+                flex-direction: row; 
+                align-items: baseline;
+            }
+
+            @include breakpoint(screen-small){
+                flex-direction: column;
+                align-items: center;
+            }
+
             a{
                 text-decoration: none;
+                @include breakpoint(screen-medium){
+                    font-size: 15px;
+                }
             }
         }
 
+        
+
         &__title{
-            grid-area: 1 / 2 / 2 / 6;
+            grid-area: 1 / 2 / 2 / 7;
             display: flex;
             align-items: center;
+
+            @include breakpoint(screen-medium-small){
+                grid-area: 1/1/1/7;
+                justify-content: center;
+            }
 
             h3{
                 font-size: 3rem;
                 padding-bottom: 5px;
                 border-bottom: solid 1px;
                 border-color: $primary-green-color;
+
+                @include breakpoint(screen-medium){
+                    font-size: 2rem;
+                }
             }
         }
 
         &__description{
-            grid-area: 2 / 1 / 3 / 6;
+            grid-area: 2 / 1 / 3 / 7;
             text-align: start;
+            
+            p{
+                display: -webkit-box;
+                -webkit-line-clamp: 5;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            @include breakpoint(screen-medium-small){
+                grid-area: 3/1/3/7;
+                p{
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                
+            }
         }
 
         &__actions{
-            grid-area: 3 / 6 / 4 / 6;
+            grid-area: 3 / 6 / 4 / 7;
             text-align: end;
+
+            @include breakpoint(screen-medium-small){
+                grid-area: 4/1/4/5;
+                text-align: start;
+            }
+
+            a{
+                text-decoration: none;
+                font-style: italic;
+                color: green;
+
+                @include border-animationg-green;
+            }
+        }
+
+        &__actionsSinglePost{
+            margin-top: 3rem;
+            grid-area: 3/1/4/7;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            @include breakpoint(screen-medium-small){
+                grid-area: 4/1/5/7;
+            }
+
+            @include breakpoint(screen-small){
+                flex-direction: column;
+                align-items: center;
+            }
 
             a{
                 text-decoration: none;
@@ -81,6 +187,10 @@
         height: 6rem;
         border-radius: 100%;
         margin: 5px;
+
+        @include breakpoint(screen-medium-small){
+            display: none;
+        }
     }
 }
 

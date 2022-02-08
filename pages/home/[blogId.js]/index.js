@@ -47,19 +47,15 @@ const blog = (props) => {
         return () => { isMounted = false };
     }, []);
 
-    
-    
-
     const handleDelete = () => {
-        deleteBlog(blog[0]);
-        router.push("/")
+        deleteBlog(blog.docId);
+        router.push("/");
     }
 
     const creatorActions = () => {
         return (
-            <div className="d-flex justify-content-evenly align-items-baseline">
-                <button className="btn btn-danger" onClick={handleDelete}>Delete post</button>
-                <div  className={`blog__box__actions`}>
+            <div className={`blog__box__actionsSinglePost`}>
+                <div>
                      <Link href={{
                     pathname: editPath,
                     query: {
@@ -67,6 +63,8 @@ const blog = (props) => {
                     }
                     }}><a>Edit post</a></Link>
                 </div>
+                <button className="btn btn-danger" onClick={handleDelete}>Delete post</button>
+                
                
             </div>
         )
@@ -85,7 +83,8 @@ const blog = (props) => {
                     <div className="blog">
                     <div className={`blog__box__user`}>
                         <img className={`blog__profilePicture`} src={defaultImage.src} />
-                        <p>{user.username}</p>
+                        <p className={`blog__userCreated`}>Posted by: </p>
+                        <Link href={{ pathname: ""}}><a>{user.username}</a></Link>
                     </div>
                     <div className={`blog__box__title`}>
                         <h3>{blog.title}</h3>
