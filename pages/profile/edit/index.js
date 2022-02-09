@@ -1,9 +1,8 @@
 import { useEffect, useState, Fragment } from "react";
 import { useRouter } from "next/router";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { addUserProfileInfo, usersColRef, updateProfile, storage } from "../../firebase";
+import { addUserProfileInfo, usersColRef, updateProfile, storage } from "../../../firebase";
 import { onSnapshot, query, where  } from 'firebase/firestore';
-import notProfilePicture from "../../public/blank-user-photo.png"
 
 const EditProfile = () => {
     const router = useRouter();
@@ -38,27 +37,26 @@ const EditProfile = () => {
                     setUserId(localStorage.getItem("user"))
                 }
             }
-            if(isSubmitedFirstTime === true){
-                addUserProfileInfo(profileData);
-                setisSubmitedFirstTime(false);
-                router.push("/profile");
-            }
-            if(isSubmitedEdit === true){
-                
-                updateProfile(editProfileData.docId, editProfileData);
-                setIsSubmitedEdit(false);
-                router.push("/profile");
-            }
+            
 
             const q = query(usersColRef, where("userId", "==", userId));
             onSnapshot(q, (snapshot) => { 
                 const user = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
                 if (user.length){
                     setEditProfileData(user[0]);
+                    setUsername(editProfileData.username);
+                    setUserDescription(editProfileData.userDescription)
                     setPrevProfileExist(true);
                 }
 
             });
+
+            if(isSubmitedFirstTime === true){
+                const profilePath = "/profile/" + userId;
+                addUserProfileInfo(profileData);
+                setisSubmitedFirstTime(false);
+                router.push(profilePath);
+            }
         
         }
     },[userId, profileData, isSubmitedFirstTime, isSubmitedEdit, imageUrl]);
@@ -66,48 +64,22 @@ const EditProfile = () => {
 
     const onSubmitEditProfile = (e) => {
         e.preventDefault();
-
-        if(e.target[2].value === ""){
-            setUserImage(e.target[2].value);
-        } else {
-            setUserImage(notProfilePicture.src);
-        }
-
-        const fileRef = ref(storage, `/profImages/${userId}`);
-        uploadBytes(fileRef, userImage).then(
-            getDownloadURL(fileRef).then(url => {
-                setImageUrl(url);
-            }).catch(err => { console.log(err) })    
-        ).catch(err => { console.log(err) }); 
-
+        const profilePath = "/profile/" + userId;
         setEditProfileData({
             "userId" : userId,
             "username" : username,
             "userDescription" : userDescription,
-            "profilePicture" : notProfilePicture.src
+            "profilePicture" : imageUrl
         });
 
-        setIsSubmitedEdit(true);
+        updateProfile(editProfileData.docId, editProfileData);
+        setIsSubmitedEdit(false);
+        router.push(profilePath);
                 
     }
 
     const onSubmitFirstTimeUser = (e) => {
         e.preventDefault();
-
-        if(e.target[2].value === ""){
-            setUserImage(e.target[2].value);
-        } else {
-            setUserImage(notProfilePicture.src);
-        } 
-
-        const fileRef = ref(storage, `/profImages/${userId}`);
-        uploadBytes(fileRef, userImage).then(
-            getDownloadURL(fileRef).then(url => {
-                setImageUrl(url);
-                console.log(imageUrl);
-            }).catch(err => { console.log(err) })    
-        ).catch(err => { console.log(err) }); 
-
         setProfileData({
             "userId" : userId,
             "username" : username,
@@ -140,6 +112,19 @@ const EditProfile = () => {
         }
     }
 
+    const onChangeHandlerFile = (e) => {
+        const file = e.target.files[0];
+        //const blob = new Blob([e.target.files[0]]);
+        //const file = new File([blob], "profileImage");
+
+        const fileRef = ref(storage, `/profImages/${userId}`);
+        
+        uploadBytes(fileRef, file).then(
+            getDownloadURL(fileRef).then(url => {
+                setImageUrl(url);
+            }).catch(err => { console.log(err) })    
+        ).catch(err => { console.log(err) }); 
+    }
 
     return(
         <Fragment>
@@ -157,7 +142,7 @@ const EditProfile = () => {
                 </div>
                 <div className="mb-3">
                     <label className="form-label fw-bold">Add a profile picture</label>
-                    <input className="form-control" type="file" name="profilePicture"></input>
+                    <input className="form-control" onChange={onChangeHandlerFile} type="file" name="profilePicture"></input>
                 </div>
                 <button className="btn btn-success">Submit</button>
             </form>

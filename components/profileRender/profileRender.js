@@ -6,10 +6,11 @@ import { usersColRef } from "../../firebase";
 import defaultUserPhoto from "../../public/blank-user-photo.png";
 import styles from "../profileRender/profileRender.module.scss";
 
-const Profile = () => {
+const Profile = ({queryUserId}) => {
     const router = useRouter();
     const { authUser, loading } = useAuth();
     const [userId, setUserId] = useState("");
+    const [isUser, setIsUser] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [profileCreated, setProfileCreated] = useState(false);
     const [userProfile, setUserProfile] = useState({
@@ -27,14 +28,17 @@ const Profile = () => {
 
       if(typeof window !== "undefined") {
         if(localStorage.getItem("user")){
-            setUserId(localStorage.getItem("user"))
+            setUserId(localStorage.getItem("user"));
+            if(userId === queryUserId){
+                setIsUser(true);
+            }
         } 
         else {
             console.log("User was not found")
             }
         }
 
-        const q = query(usersColRef, where("userId", "==", userId));
+        const q = query(usersColRef, where("userId", "==", queryUserId));
         onSnapshot(q, (snapshot) => { 
             const user = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
             if (user.length){
@@ -52,10 +56,10 @@ const Profile = () => {
         
         return () => { isMounted = false };
 
-    }, [userId, authUser, profileCreated, authUser]);
+    }, [queryUserId ,userId, authUser, profileCreated, authUser]);
 
     const renderEdit = () => {
-        router.push("/profile/editProfile");
+        router.push("/profile/edit");
     }
 
     const ProfileRender = () => {
@@ -95,16 +99,19 @@ const Profile = () => {
                         <span className={styles.profile__title}>My profile</span> 
                         <hr className={styles.profile__title__hr}></hr>
                             <div className={styles.profile__top}>
-                                <img className="" src={userProfile.profilePicture =! "" && defaultUserPhoto.src}/>
+                                <img className="" src={userProfile.profilePicture}/>
                                 <div className={styles.profile__top__name}>
                                     <div><h3>{userProfile.username}</h3></div>
                                 </div> 
                             </div>
                             <h4>About me...</h4>
                             <h6>{userProfile.userDescription}</h6>
+                            {isUser && 
                             <div className={styles.profile__actions}>
                                 <button onClick={renderEdit} className="btn btn-dark">Edit profile</button>
                             </div>
+                            }
+                            
                         </div>
                     </div>
                 )

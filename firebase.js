@@ -82,7 +82,7 @@ const deleteBlog = (docId) => {
 
 const updateBlog = (docId, updates) => {
   const docRef = doc(db, "blogs", docId);
-  updateDoc(docRef, updates)
+  updateDoc(docRef, updates);
 }
 
 /// DB FUNCTIONS FOR USERS
@@ -99,7 +99,7 @@ const addUserProfileInfo = (user) => {
 
 const updateProfile = (docId, updates) => {
   const docRef = doc(db, "users", docId);
-  updateDoc(docRef, updates)
+  updateDoc(docRef, updates);
 }
 
 

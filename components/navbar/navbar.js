@@ -10,6 +10,7 @@ const Navbar = () => {
 
     const { authUser, loading } = useAuth();
     const [ isLogged, setIsLogged ] = useState(false);
+    const [userId, setUserId] = useState("");
 
     useEffect(() => {
       if (!loading && !authUser){
@@ -17,6 +18,13 @@ const Navbar = () => {
       } else {
         setIsLogged(true);
       }
+
+      if(typeof window !== "undefined") {
+        if(localStorage.getItem("user")){
+            setUserId(localStorage.getItem("user"))
+        }
+    }
+
     }, [authUser, loading])
 
     const signOut = () => {
@@ -44,7 +52,7 @@ const Navbar = () => {
                           </li>
                           <li className="nav-item">
                             <span className="nav-link active">
-                              <Link href="/profile"><a className={styles.navbarCustom__anchor}>Profile</a></Link>
+                              <Link href={`/profile/${userId}`}><a className={styles.navbarCustom__anchor}>Profile</a></Link>
                             </span>
                           </li>
                           <li className="nav-item">

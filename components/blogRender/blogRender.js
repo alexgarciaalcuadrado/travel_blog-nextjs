@@ -36,7 +36,6 @@ const BlogRender = () => {
     }, []);
 
     const Blog = ({blog, path}) => {
-
         let userCreator = [];
         let userImage = notProfilePicture.src;
         let username = "";
@@ -52,13 +51,15 @@ const BlogRender = () => {
         } else {
             username = userCreator.username;
         }
+
+        const profilePath = "/profile/" + userCreator.userId;
         
         return (
         <div key={blog.blogId} className={`blog`}>
             <div className={`blog__box__user`}>
                 <img className={`blog__profilePicture`} src={userImage}></img>
                 <h3 className={`blog__userCreated`} >Posted by: </h3>
-                <Link href={{ pathname: ""}}><a>{username}</a></Link>
+                <Link href={profilePath}><a>{username}</a></Link>
             </div>
             <div className={`blog__box__title`}>
                 <h3>{blog.title}</h3>
