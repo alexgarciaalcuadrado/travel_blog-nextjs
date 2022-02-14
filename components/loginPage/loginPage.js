@@ -23,7 +23,7 @@ const Login = () => {
             }
             if(accountCreated === true){
                     setTimeout(() => {
-                        router.push("/profile");
+                        router.push(`/profile/${userId}`);
                     }, 2000); 
             }  
             if (accountLogged === true){

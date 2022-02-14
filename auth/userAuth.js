@@ -9,6 +9,7 @@ const formatAuthUser = (user) => ({
 
 export default function useFirebaseAuth() {
   const [authUser, setAuthUser] = useState(null);
+  const [userId, setUserId] = useState("");
   const [loading, setLoading] = useState(true);
 
   const authStateChanged = async (authState) => {
@@ -25,9 +26,14 @@ export default function useFirebaseAuth() {
   };
 
   useEffect(() => {
+    if(typeof window !== "undefined") {
+      if(localStorage.getItem("user")){
+          setUserId(localStorage.getItem("user"));
+      } 
+    }
     const unsubscribe = onAuthStateChanged(auth, authStateChanged)
     return () => unsubscribe();
-  }, []);
+  }, [userId]);
 
   return {
     authUser,

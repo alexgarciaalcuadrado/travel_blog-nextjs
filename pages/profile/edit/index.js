@@ -1,6 +1,6 @@
 import { useEffect, useState, Fragment } from "react";
 import { useRouter } from "next/router";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { addUserProfileInfo, usersColRef, updateProfile, storage } from "../../../firebase";
 import { onSnapshot, query, where  } from 'firebase/firestore';
 
@@ -24,7 +24,8 @@ const EditProfile = () => {
         "userDescription" : "",
         "profilePicture" : ""
     });
-    const [userImage, setUserImage] = useState("");
+    const [startLoading, setStartLoading] = useState(false);
+    const [uploadLoading, setUploadLoading] = useState(0);
     const [username, setUsername] = useState("");
     const [userDescription, setUserDescription] = useState("");
     const [imageUrl, setImageUrl] = useState("");
@@ -57,21 +58,16 @@ const EditProfile = () => {
                 setisSubmitedFirstTime(false);
                 router.push(profilePath);
             }
-        
+
         }
+        return () => isMounted = false;
     },[userId, profileData, isSubmitedFirstTime, isSubmitedEdit, imageUrl]);
 
 
     const onSubmitEditProfile = (e) => {
         e.preventDefault();
         const profilePath = "/profile/" + userId;
-        setEditProfileData({
-            "userId" : userId,
-            "username" : username,
-            "userDescription" : userDescription,
-            "profilePicture" : imageUrl
-        });
-
+        
         updateProfile(editProfileData.docId, editProfileData);
         setIsSubmitedEdit(false);
         router.push(profilePath);
@@ -112,19 +108,56 @@ const EditProfile = () => {
         }
     }
 
-    const onChangeHandlerFile = (e) => {
+    const onChangeHandlerFile = async (e) => {
         const file = e.target.files[0];
-        //const blob = new Blob([e.target.files[0]]);
-        //const file = new File([blob], "profileImage");
-
         const fileRef = ref(storage, `/profImages/${userId}`);
+        const uploadTask = uploadBytesResumable(fileRef, file, { contentType: "image/jpeg" });
+        uploadTask.on('state_changed',
+          (snapshot) => {
+            setStartLoading(true);
+            const progress = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            setUploadLoading(progress)
+          }, 
+          (error) => {
+            console.log(error);
+          }
+        );
+        await getDownloadURL(uploadTask.snapshot.ref).then((url) => { 
+            setEditProfileData({
+                ...editProfileData,
+                "profilePicture" : url
+            })
+            setStartLoading(false);
+        });
         
-        uploadBytes(fileRef, file).then(
-            getDownloadURL(fileRef).then(url => {
-                setImageUrl(url);
-            }).catch(err => { console.log(err) })    
-        ).catch(err => { console.log(err) }); 
     }
+
+    const showLoading = () => {
+            if(uploadLoading !== 100){
+                if(startLoading === true){
+                    return (
+                        <div>
+                            <p className="fs-3 text">{uploadLoading}%</p>
+                            <br></br>
+                            <button className="btn btn-success" disabled>Submit</button>
+                        </div>
+                    )
+                } else {
+                    return(
+                        <button className="btn btn-success" disabled>Submit</button>
+                    )
+                }
+            } else {
+                return (
+                    <div>
+                        <h3>Image Uploaded!</h3>
+                        <input type="submit" value="Submit" className="btn btn-success"></input>
+                    </div>
+                )
+            }
+        
+    }
+
 
     return(
         <Fragment>
@@ -144,7 +177,7 @@ const EditProfile = () => {
                     <label className="form-label fw-bold">Add a profile picture</label>
                     <input className="form-control" onChange={onChangeHandlerFile} type="file" name="profilePicture"></input>
                 </div>
-                <button className="btn btn-success">Submit</button>
+                {showLoading()}
             </form>
             </div>
         </Fragment>

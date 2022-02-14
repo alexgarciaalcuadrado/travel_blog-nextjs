@@ -3,7 +3,8 @@ import {
   getAuth, 
   createUserWithEmailAndPassword,  
   signOut,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  deleteUser
 } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL, uploadString } from "firebase/storage";
 import { addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
@@ -48,8 +49,7 @@ const signUserOut = () => {
   .catch((err) => {
     console.log(err)
   })
-}
- 
+};
 
 const signUserIn = (values) => {
   signInWithEmailAndPassword(auth, values.email, values.password)
@@ -59,6 +59,12 @@ const signUserIn = (values) => {
   })
   .catch((err) => {
   })
+};
+
+const deleteSignedUser = (user) => {
+  deleteUser(user).then(() => {
+    localStorage.removeItem("user");
+  }).catch(err => console.log(err));
 }
 
 
@@ -105,6 +111,8 @@ const updateProfile = (docId, updates) => {
 
 
 
+
+
 export {createAccount, signUserOut, signUserIn, auth, blogsColRef,
         addBlog, deleteBlog, updateBlog, addUserProfileInfo, usersColRef,
-        updateProfile, storage}
+        updateProfile, storage, deleteSignedUser}
