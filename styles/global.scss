@@ -1,6 +1,7 @@
 @import "../styles/variables.scss";
 @import "../styles/mixin.scss";
 
+
 .layout{
     background: url(../public/backgroundImage.jpg) no-repeat center center fixed;
     @include background-image-setting;

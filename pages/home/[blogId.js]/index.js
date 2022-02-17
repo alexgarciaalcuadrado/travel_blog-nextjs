@@ -70,6 +70,7 @@ const blog = (props) => {
         )
     } 
     
+    const profilePath = "/profile/" + user.userId;
 
     return (
         <Fragment>
@@ -84,7 +85,7 @@ const blog = (props) => {
                     <div className={`blog__box__user`}>
                         <img className={`blog__profilePicture`} src={defaultImage.src} />
                         <p className={`blog__userCreated`}>Posted by: </p>
-                        <Link href={{ pathname: ""}}><a>{user.username}</a></Link>
+                        <Link href={{ pathname: profilePath}}><a>{user.username}</a></Link>
                     </div>
                     <div className={`blog__box__title`}>
                         <h3>{blog.title}</h3>

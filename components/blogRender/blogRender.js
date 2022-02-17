@@ -112,7 +112,10 @@ const BlogRender = () => {
         <Fragment>
             {isLoading 
             ?
-            <p>Loading...</p>
+            <div className="page-background-setted-height">
+              <p>Loading...</p>
+            </div>
+            
             :
             blogs.length !== 0 && 
             (

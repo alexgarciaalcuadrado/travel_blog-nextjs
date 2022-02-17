@@ -4,6 +4,7 @@ import { onSnapshot, query, where  } from 'firebase/firestore';
 import { useAuth } from "../../auth/authUserProvider";
 import { usersColRef, deleteSignedUser, auth } from "../../firebase";
 import styles from "../profileRender/profileRender.module.scss";
+import Modal from "react-bootstrap/Modal";
 
 const Profile = ({queryUserId}) => {
     const router = useRouter();
@@ -11,6 +12,7 @@ const Profile = ({queryUserId}) => {
     const { authUser, loading } = useAuth();
     const [userId, setUserId] = useState("");
     const [showModal, setShowModal] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
     const [isUser, setIsUser] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [profileCreated, setProfileCreated] = useState(false);
@@ -77,11 +79,16 @@ const Profile = ({queryUserId}) => {
 
     }, [queryUserId ,userId, authUser, profileCreated, authUser]);
 
-    const renderEdit = () => {
-        router.push("/profile/edit");
+    const renderEdit = () => {router.push("/profile/edit");}
+    const handleOpenModal = () => {setShowModal(true)};
+    const handleCloseModal = () => {setShowModal(false)};
+    const deleteUser = async (e) => {
+        e.preventDefault();
+        setDeleteLoading(true);
+        await deleteSignedUser(e.target[0].value);
+        setDeleteLoading(false);
+        router.push("/");
     }
-
-    const setModal = () => {setShowModal(true)};
 
     const ProfileRender = () => {
         if(profileCreated === false){
@@ -130,27 +137,45 @@ const Profile = ({queryUserId}) => {
                             {isUser && 
                             <div className={styles.profile__actions}>
                                 <button onClick={renderEdit} className="btn btn-dark">Edit profile</button>
-{/*                                 <button type="button" onClick={setModal} className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete profile</button>
- */}                            </div>
+                                <button type="button" onClick={handleOpenModal} className="btn btn-danger">Delete profile</button>
+                            </div>
                             }
                         </div>
-                        {/* <div className="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div className="modal-dialog">
-                            <div className="modal-content">
-                              <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">Modal title</h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div className="modal-body">
-                                ...
-                              </div>
-                              <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary">Save changes</button>
-                              </div>
+
+                        <div>
+                        <Modal class="modal" show={showModal} onHide={handleCloseModal}>
+                          <Modal.Header class="modal-header" closeButton>
+                            <Modal.Title class="modal-title">Are you sure?</Modal.Title>
+                          </Modal.Header>
+                        <Modal.Body class="modal-body">
+                          <h5>Once you delete your profile, all your blogs will be deleted permanently.</h5>
+                          <h5 className="fw-light">In order to continue, please write your password again</h5>
+                          <form onSubmit={deleteUser}>
+                            <div class="mb-3">
+                              <label for="passwordInput" class="form-label">Password</label>
+                              <input id="passwordInput" class="form-control" type="password"/>
                             </div>
-                          </div>
-                        </div> */}
+                            {deleteLoading === true ?
+                                (
+                                <div class="spinner-border" role="status">
+                                  <span class="visually-hidden">Loading...</span>
+                                </div>
+                                )
+                                :
+                                null
+                            }    
+
+                            <div class="modal-footer d-flex justify-content-between">
+                                <button type="submit" className="btn btn-danger">Delete profile</button>
+                                <button className="btn btn-primary" onClick={handleCloseModal}>
+                                  No, thanks
+                                </button>
+                            </div>
+                          </form>
+                          
+                        </Modal.Body>
+                        </Modal>
+                        </div>
                     </div>
                 )
             }  

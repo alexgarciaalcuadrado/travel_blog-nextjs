@@ -16,7 +16,7 @@ import Navbar from '../components/navbar/navbar';
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    import "bootstrap/dist/js/bootstrap";
+    typeof document !== undefined ? require('bootstrap/dist/js/bootstrap') : null;
   }, []);
   
   return (
@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <title>TravelPin</title>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,200;0,400;1,100;1,500&display=swap" rel="stylesheet"></link>

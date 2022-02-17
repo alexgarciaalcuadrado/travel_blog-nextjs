@@ -1,14 +1,24 @@
 import { initializeApp } from "firebase/app";
 import { 
   getAuth, 
-  createUserWithEmailAndPassword,  
   signOut,
-  signInWithEmailAndPassword,
-  deleteUser
+  deleteUser,
+  EmailAuthProvider,
+  reauthenticateWithCredential
 } from "firebase/auth";
-import { getStorage, ref, uploadBytes, getDownloadURL, uploadString } from "firebase/storage";
-import { addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { getFirestore, collection } from 'firebase/firestore';
+import { getStorage} from "firebase/storage";
+import {
+  getFirestore, 
+  collection, 
+  addDoc, 
+  deleteDoc, 
+  doc, 
+  updateDoc, 
+  query, 
+  where,
+  onSnapshot 
+} from 'firebase/firestore';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyDFVVbAjiedl5jdYwwb7nMNhcVCM-cYIfY",
@@ -31,17 +41,6 @@ const storage = getStorage();
 
 ///AUTH FUNCTIONS
 
-const createAccount = (values) => {
-  createUserWithEmailAndPassword(auth, values.email, values.password)
-  .then((cred) => {
-    localStorage.setItem("user", cred.user.uid);
-  })
-  .catch(err => {
-    console.log(err.message)
-  
-  })
-}
-
 const signUserOut = () => {
   signOut(auth)
   .then(() => {
@@ -51,20 +50,29 @@ const signUserOut = () => {
   })
 };
 
-const signUserIn = (values) => {
-  signInWithEmailAndPassword(auth, values.email, values.password)
-  .then((cred) => {
-    localStorage.setItem("user", cred.user.uid);
-    
-  })
-  .catch((err) => {
-  })
-};
+const deleteSignedUser = async (password) => {
+  const credential  = EmailAuthProvider.credential(
+    auth.currentUser.email,
+    password 
+    );
+  const result = await reauthenticateWithCredential(
+    auth.currentUser, 
+    credential
+    ); 
 
-const deleteSignedUser = (user) => {
-  deleteUser(user).then(() => {
-    localStorage.removeItem("user");
-  }).catch(err => console.log(err));
+    const docRef = doc(db, "users", result.user.uid);
+    deleteDoc(docRef);
+    localStorage.removeItem("user");  
+
+    const q = query(blogsColRef, where("creatorId", "==", result.user.uid));
+    onSnapshot(q, (snapshot) => { 
+    const blog = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
+    if (blog.length){
+      const docRef = doc(db, "blogs", blog[0].docId);
+      deleteDoc(docRef);
+    }
+    }); 
+    await deleteUser(result.user);
 }
 
 
@@ -113,6 +121,5 @@ const updateProfile = (docId, updates) => {
 
 
 
-export {createAccount, signUserOut, signUserIn, auth, blogsColRef,
-        addBlog, deleteBlog, updateBlog, addUserProfileInfo, usersColRef,
-        updateProfile, storage, deleteSignedUser}
+export {signUserOut, auth, blogsColRef, addBlog, deleteBlog, updateBlog, addUserProfileInfo, 
+  usersColRef,updateProfile, storage, deleteSignedUser}

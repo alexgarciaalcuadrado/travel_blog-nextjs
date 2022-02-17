@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import {useRouter} from "next/router";
 import { Formik } from 'formik';
-import { createAccount, signUserIn } from "../../firebase";
+import {  
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+  } from "firebase/auth";
+import {auth} from "../../firebase";
 import styles from "../loginPage/loginPage.module.scss";
 
 
 const Login = () => {
     const router = useRouter();
     const [userId, setUserId] = useState("");
-    const [accountCreated, setAccountCreated] = useState(false);
-    const [accountLogged, setAccountLogged] = useState(false);
-
+    const [loginErrorMessage, setLoginErrorMessage] = useState("");
+    const [createAccountErrorMessage, setCreateAccountErrorMessage] = useState("");
 
     useEffect(() => {
         let isMounted = true;
@@ -21,27 +24,13 @@ const Login = () => {
                     setUserId(localStorage.getItem("user"))
                 }
             }
-            if(accountCreated === true){
-                    setTimeout(() => {
-                        router.push(`/profile/${userId}`);
-                    }, 2000); 
-            }  
-            if (accountLogged === true){
-                    setTimeout(() =>{ 
-                        router.push("/");
-                    }, 2000);
-                } else {
-                    console.log("user does not exist");
-                }
-                
-            }
-        
         
         return () => {
             clearTimeout()
             isMounted = false;
         };
-    }, [accountLogged, accountCreated]);
+        }
+    }, []);
 
 
     return (
@@ -65,7 +54,19 @@ const Login = () => {
                return errors;
            }}
             onSubmit={(values) => {
-                signUserIn(values);
+                signInWithEmailAndPassword(auth, values.email, values.password)
+                .then((cred) => {
+                    localStorage.setItem("user", cred.user.uid);
+                    router.push("/");
+                })
+                .catch((err) => {
+                    console.log(err.message)
+                    if(err.message === "Firebase: Error (auth/user-not-found)."){
+                        setLoginErrorMessage("This account doesn't exist.")
+                    } else if(err.message === "Firebase: Error (auth/wrong-password)."){
+                        setLoginErrorMessage("The password is incorrect");
+                    }
+                })
                 setAccountLogged(true);
             }}
         > 
@@ -109,7 +110,8 @@ const Login = () => {
                 <div class="form-text" id="passError">{errors.password && touched.password && errors.password}</div>
                 
              </div>
-            
+            {loginErrorMessage}
+            <br />
             <button className="btn btn-success" type="submit">
              Submit
             </button>
@@ -136,8 +138,20 @@ const Login = () => {
                 return errors;
             }}
             onSubmit={(values) => {
-                createAccount(values);
-                setAccountCreated(true)
+                createUserWithEmailAndPassword(auth, values.email, values.password)
+                .then((cred) => {
+                  localStorage.setItem("user", cred.user.uid);
+                  router.push(`/profile/${userId}`);
+                })
+                .catch(err => {
+                  console.log(err.message);
+                  if(err.message === "Firebase: Error (auth/email-already-in-use)."){
+                    setCreateAccountErrorMessage("There is an existing account with this email")
+                  } else if(err.message === "Firebase: Password should be at least 6 characters (auth/weak-password)."){
+                      setCreateAccountErrorMessage("This is a weak password, please make it at least 6 characters long");
+                  }
+                });
+                
             }}
         >
         {({
@@ -182,7 +196,8 @@ const Login = () => {
                </span>
                <div class="form-text" id="passError">{errors.password && touched.password && errors.password}</div>
             </div>
-           
+           {createAccountErrorMessage}
+           <br />
            <button className="btn btn-success" type="submit">
             Submit
            </button>

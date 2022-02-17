@@ -120,17 +120,18 @@ const EditProfile = () => {
           }, 
           (error) => {
             console.log(error);
-          }
-        );
-        await getDownloadURL(uploadTask.snapshot.ref).then((url) => { 
+          },
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => { 
             setEditProfileData({
                 ...editProfileData,
                 "profilePicture" : url
-            })
+            });
             setStartLoading(false);
-        });
-        
+        })
+        );
     }
+
+    /// fileref does not exist
 
     const showLoading = () => {
             if(uploadLoading !== 100){
