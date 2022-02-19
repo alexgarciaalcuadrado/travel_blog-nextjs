@@ -34,6 +34,7 @@ initializeApp(firebaseConfig);
 const db = getFirestore();
 const blogsColRef = collection(db, "blogs");
 const usersColRef = collection(db, "users");
+const passColRef = collection(db, "hasedPass");
 
 const auth = getAuth();
 
@@ -72,7 +73,9 @@ const deleteSignedUser = async (password) => {
       deleteDoc(docRef);
     }
     }); 
-    await deleteUser(result.user);
+    deleteUser(result.user)
+    .then((err) =>{ console.log(err)})
+    .catch(err => console.log(err.message));
 }
 
 
@@ -121,5 +124,5 @@ const updateProfile = (docId, updates) => {
 
 
 
-export {signUserOut, auth, blogsColRef, addBlog, deleteBlog, updateBlog, addUserProfileInfo, 
+export {signUserOut, passColRef,auth, blogsColRef, addBlog, deleteBlog, updateBlog, addUserProfileInfo, 
   usersColRef,updateProfile, storage, deleteSignedUser}

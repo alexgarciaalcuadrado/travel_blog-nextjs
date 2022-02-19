@@ -25,7 +25,7 @@ const Navbar = () => {
         }
     }
 
-    }, [authUser, loading])
+    }, [authUser, loading, userId])
 
     const signOut = () => {
         signUserOut(); 

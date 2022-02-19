@@ -2,7 +2,8 @@ import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { onSnapshot, query, where  } from 'firebase/firestore';
 import { useAuth } from "../../auth/authUserProvider";
-import { usersColRef, deleteSignedUser, auth } from "../../firebase";
+import { usersColRef, deleteSignedUser, auth, passColRef } from "../../firebase";
+import { decryptPassword } from "../../crypto";
 import styles from "../profileRender/profileRender.module.scss";
 import Modal from "react-bootstrap/Modal";
 
@@ -11,6 +12,8 @@ const Profile = ({queryUserId}) => {
     
     const { authUser, loading } = useAuth();
     const [userId, setUserId] = useState("");
+    const [existingPass, setExistingPass] = useState("");
+    const [deleteError, setDeleteError] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [isUser, setIsUser] = useState(false);
@@ -55,6 +58,16 @@ const Profile = ({queryUserId}) => {
             }
              
             }); 
+
+            const qPass = query(passColRef, where("userId", "==", userId));
+            onSnapshot(qPass, (snapshot) => { 
+            const hashedPassword = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
+            if (hashedPassword.length){
+                const password = decryptPassword(hashedPassword[0].password);
+                setExistingPass(password);
+            }
+             
+            });
         } 
         if (queryUserId !== undefined){
             const q = query(usersColRef, where("userId", "==", queryUserId));
@@ -84,11 +97,18 @@ const Profile = ({queryUserId}) => {
     const handleCloseModal = () => {setShowModal(false)};
     const deleteUser = async (e) => {
         e.preventDefault();
-        setDeleteLoading(true);
-        await deleteSignedUser(e.target[0].value);
-        setDeleteLoading(false);
-        router.push("/");
+        if(e.target[0].value ===  existingPass){
+            setDeleteError("");
+            setDeleteLoading(true);
+            await deleteSignedUser(e.target[0].value);
+            setDeleteLoading(false);
+            router.push("/");
+        } else {
+            setDeleteError("The password is incorrect, please try again");
+        }
+        
     }
+
 
     const ProfileRender = () => {
         if(profileCreated === false){
@@ -164,7 +184,7 @@ const Profile = ({queryUserId}) => {
                                 :
                                 null
                             }    
-
+                            {deleteError}
                             <div class="modal-footer d-flex justify-content-between">
                                 <button type="submit" className="btn btn-danger">Delete profile</button>
                                 <button className="btn btn-primary" onClick={handleCloseModal}>

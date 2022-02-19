@@ -5,7 +5,9 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword
   } from "firebase/auth";
-import {auth} from "../../firebase";
+import { addDoc } from "firebase/firestore"; 
+import {auth, passColRef} from "../../firebase";
+import {encryptPassword} from "../../crypto";
 import styles from "../loginPage/loginPage.module.scss";
 
 
@@ -14,6 +16,7 @@ const Login = () => {
     const [userId, setUserId] = useState("");
     const [loginErrorMessage, setLoginErrorMessage] = useState("");
     const [createAccountErrorMessage, setCreateAccountErrorMessage] = useState("");
+    const [passwordToHash, setPasswordToHash] = useState("");
 
     useEffect(() => {
         let isMounted = true;
@@ -24,13 +27,22 @@ const Login = () => {
                     setUserId(localStorage.getItem("user"))
                 }
             }
-        
+            
+            if(passwordToHash !== ""){
+                const hashedPassword = encryptPassword(passwordToHash);
+                addDoc(passColRef, {
+                    userId : userId,
+                    password : hashedPassword
+                });
+            }
+
+        }
         return () => {
             clearTimeout()
             isMounted = false;
         };
-        }
-    }, []);
+        
+    }, [passwordToHash, userId]);
 
 
     return (
@@ -56,7 +68,9 @@ const Login = () => {
             onSubmit={(values) => {
                 signInWithEmailAndPassword(auth, values.email, values.password)
                 .then((cred) => {
+                    setUserId(cred.user.uid);
                     localStorage.setItem("user", cred.user.uid);
+                    setPasswordToHash(values.password);
                     router.push("/");
                 })
                 .catch((err) => {
@@ -67,7 +81,6 @@ const Login = () => {
                         setLoginErrorMessage("The password is incorrect");
                     }
                 })
-                setAccountLogged(true);
             }}
         > 
         {({
@@ -80,9 +93,9 @@ const Login = () => {
         }) => (
          <form onSubmit={handleSubmit} autoComplete="off">
              <div className={`mb-3 ${styles.login__box}`}> 
-                <label for="email" className="form-label">Email</label>
+                <label for="emailLogin" className="form-label">Email</label>
                 <input
-                 id="email"
+                 id="emailLogin"
                  className={`form-control ${styles.login__input}`}
                  aria-describedby="emailError"
                  type="email"
@@ -96,9 +109,9 @@ const Login = () => {
              </div>
             
             <div className={`mb-3 ${styles.login__box}`}> 
-                <label for="password" className="form-label">Password</label>
+                <label for="passwordLogin" className="form-label">Password</label>
                 <input 
-                 id="password"
+                 id="passwordLogin"
                  className={`form-control ${styles.login__input}`}
                  aria-describedby="passError"
                  type="password"
@@ -164,9 +177,9 @@ const Login = () => {
         }) => (
             <form onSubmit={handleSubmit} autoComplete="off">
             <div className={`mb-3 ${styles.login__box}`}> 
-               <label for="email" className="form-label">Email</label>
+               <label for="emailCreate" className="form-label">Email</label>
                <input
-                id="email"
+                id="emailCreate"
                 className={`form-control ${styles.login__input}`}
                 aria-describedby="emailError"
                 type="email"
@@ -180,9 +193,9 @@ const Login = () => {
             </div>
            
            <div className={`mb-3 ${styles.login__box}`}> 
-               <label for="password" className="form-label">Password</label>
+               <label for="passwordCreate" className="form-label">Password</label>
                <input 
-                id="password"
+                id="passwordCreate"
                 className={`form-control ${styles.login__input}`}
                 aria-describedby="passError"
                 type="password"
