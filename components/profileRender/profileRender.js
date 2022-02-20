@@ -13,6 +13,7 @@ const Profile = ({queryUserId}) => {
     const { authUser, loading } = useAuth();
     const [userId, setUserId] = useState("");
     const [existingPass, setExistingPass] = useState("");
+    const [passwordDocId, setPasswordDocId] = useState([]);
     const [deleteError, setDeleteError] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
@@ -63,6 +64,7 @@ const Profile = ({queryUserId}) => {
             onSnapshot(qPass, (snapshot) => { 
             const hashedPassword = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
             if (hashedPassword.length){
+                setPasswordDocId(hashedPassword[0]);
                 const password = decryptPassword(hashedPassword[0].password);
                 setExistingPass(password);
             }
@@ -92,6 +94,7 @@ const Profile = ({queryUserId}) => {
 
     }, [queryUserId ,userId, authUser, profileCreated, authUser]);
 
+
     const renderEdit = () => {router.push("/profile/edit");}
     const handleOpenModal = () => {setShowModal(true)};
     const handleCloseModal = () => {setShowModal(false)};
@@ -100,7 +103,7 @@ const Profile = ({queryUserId}) => {
         if(e.target[0].value ===  existingPass){
             setDeleteError("");
             setDeleteLoading(true);
-            await deleteSignedUser(e.target[0].value);
+            await deleteSignedUser(e.target[0].value, passwordDocId.docId);
             setDeleteLoading(false);
             router.push("/");
         } else {

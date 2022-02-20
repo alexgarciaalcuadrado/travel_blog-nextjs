@@ -34,7 +34,7 @@ initializeApp(firebaseConfig);
 const db = getFirestore();
 const blogsColRef = collection(db, "blogs");
 const usersColRef = collection(db, "users");
-const passColRef = collection(db, "hasedPass");
+const passColRef = collection(db, "hashedPass");
 
 const auth = getAuth();
 
@@ -51,7 +51,7 @@ const signUserOut = () => {
   })
 };
 
-const deleteSignedUser = async (password) => {
+const deleteSignedUser = async (password, passDocId) => {
   const credential  = EmailAuthProvider.credential(
     auth.currentUser.email,
     password 
@@ -60,21 +60,29 @@ const deleteSignedUser = async (password) => {
     auth.currentUser, 
     credential
     ); 
-
-    const docRef = doc(db, "users", result.user.uid);
-    deleteDoc(docRef);
-    localStorage.removeItem("user");  
-
-    const q = query(blogsColRef, where("creatorId", "==", result.user.uid));
-    onSnapshot(q, (snapshot) => { 
-    const blog = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
-    if (blog.length){
-      const docRef = doc(db, "blogs", blog[0].docId);
-      deleteDoc(docRef);
-    }
-    }); 
+ 
     deleteUser(result.user)
-    .then((err) =>{ console.log(err)})
+    .then(() =>{ 
+      const userRef = doc(db, "users", result.user.uid);
+      deleteDoc(userRef);
+
+      const passRef = doc(db, "hashedPass", passDocId);
+      deleteDoc(passRef);
+
+      localStorage.removeItem("user");  
+  
+      const qBlogs = query(blogsColRef, where("creatorId", "==", result.user.uid));
+      onSnapshot(qBlogs, (snapshot) => { 
+      const blog = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
+      if (blog.length){
+        blog.map((blog) => {
+          const docRef = doc(db, "blogs", blog.docId);
+          deleteDoc(docRef);
+        })
+        
+      }
+      });
+    })
     .catch(err => console.log(err.message));
 }
 

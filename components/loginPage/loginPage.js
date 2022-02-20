@@ -5,8 +5,8 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword
   } from "firebase/auth";
-import { addDoc } from "firebase/firestore"; 
-import {auth, passColRef} from "../../firebase";
+import { addDoc, onSnapshot, query, where, doc, getDoc } from "firebase/firestore"; 
+import {auth, passColRef, db} from "../../firebase";
 import {encryptPassword} from "../../crypto";
 import styles from "../loginPage/loginPage.module.scss";
 
@@ -15,25 +15,16 @@ const Login = () => {
     const router = useRouter();
     const [userId, setUserId] = useState("");
     const [loginErrorMessage, setLoginErrorMessage] = useState("");
+    const [prevPassExist, setPrevPassExist] = useState(false);
     const [createAccountErrorMessage, setCreateAccountErrorMessage] = useState("");
-    const [passwordToHash, setPasswordToHash] = useState("");
 
     useEffect(() => {
         let isMounted = true;
         if(isMounted === true){
-            
             if(typeof window !== "undefined") {
                 if(localStorage.getItem("user")){
                     setUserId(localStorage.getItem("user"))
                 }
-            }
-            
-            if(passwordToHash !== ""){
-                const hashedPassword = encryptPassword(passwordToHash);
-                addDoc(passColRef, {
-                    userId : userId,
-                    password : hashedPassword
-                });
             }
 
         }
@@ -42,8 +33,17 @@ const Login = () => {
             isMounted = false;
         };
         
-    }, [passwordToHash, userId]);
+    }, []);
 
+    /* const setPasswordToHash = async (passwordToHash) => {
+        const hashedPassword = encryptPassword(passwordToHash);
+        await addDoc(passColRef, {
+            userId : userId,
+            password : hashedPassword
+        });
+        router.push(`/profile/${userId}`);
+        
+    }; */
 
     return (
         <div className={styles.container}>
@@ -68,9 +68,7 @@ const Login = () => {
             onSubmit={(values) => {
                 signInWithEmailAndPassword(auth, values.email, values.password)
                 .then((cred) => {
-                    setUserId(cred.user.uid);
                     localStorage.setItem("user", cred.user.uid);
-                    setPasswordToHash(values.password);
                     router.push("/");
                 })
                 .catch((err) => {
@@ -154,7 +152,12 @@ const Login = () => {
                 createUserWithEmailAndPassword(auth, values.email, values.password)
                 .then((cred) => {
                   localStorage.setItem("user", cred.user.uid);
-                  router.push(`/profile/${userId}`);
+                  const hashedPassword = encryptPassword(values.password);
+                  addDoc(passColRef, {
+                      userId : cred.user.uid,
+                      password : hashedPassword
+                  });
+                  router.push(`/profile/${cred.user.uid}`);
                 })
                 .catch(err => {
                   console.log(err.message);

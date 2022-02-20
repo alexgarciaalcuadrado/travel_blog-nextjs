@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import {v4 as uuidv4} from 'uuid';
-import { addBlog } from "../../firebase";
-import Navbar from "../../components/navbar/navbar";
+import { onSnapshot, query, where  } from 'firebase/firestore';
+import { addBlog, usersColRef } from "../../firebase";
 
 const CreateBlog = () => {
     const router = useRouter();
 
     const [userId, setUserId] = useState("");
+    const [userProfileExist, setUserProfileExist] = useState(true);
     const [isSubmited, setIsSubmited] = useState(false);
     const [newBlog, setNewBlog] = useState({
         "creatorId" : "",
@@ -27,6 +28,15 @@ const CreateBlog = () => {
                 console.log("User was not found")
             }
         }
+
+        const q = query(usersColRef, where("userId", "==", userId));
+            onSnapshot(q, (snapshot) => { 
+            const user = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
+            if (!user.length){
+                setUserProfileExist(false);
+            } 
+             
+            });
 
         if(isSubmited){
             addBlog(newBlog);
@@ -52,27 +62,37 @@ const CreateBlog = () => {
         
     }
 
+    if(userProfileExist === true){
+        return(
+            <div className="page-background">
+                <h1 className="display-6 gradient__green__underline text-center">Write your experience</h1>
+                <form onSubmit={submitHandler}>
+                <div className="mb-3">
+                    <label className="form-label fw-bold" name="title">Title of your post</label>
+                    <input className="form-control" type="text" name="title"></input>
+                </div>
+                <div className="mb-3">
+                    <label className="form-label  fw-bold">Your story</label>
+                    <textarea className="form-control" rows="5" type="text" name="description" ></textarea>
+                </div>
+                <div className="mb-3">
+                    <label className="form-label fw-bold">Add an image</label>
+                    <input className="form-control" type="file" name="image"></input>
+                </div>
+                <button className="btn btn-success">Submit</button>
+                </form>
+            </div>
+        )
+    } else {
+        return(
+            <div className="page-background-setted-height">
+                <h3 className="text-center fw-light">You haven't created your profile yet, please do so in order to be able to create blogs.</h3>
+            </div>
 
-    return(
-        <div className="page-background">
-            <h1 className="display-6 gradient__green__underline text-center">Write your experience</h1>
-            <form onSubmit={submitHandler}>
-            <div className="mb-3">
-                <label className="form-label fw-bold" name="title">Title of your post</label>
-                <input className="form-control" type="text" name="title"></input>
-            </div>
-            <div className="mb-3">
-                <label className="form-label  fw-bold">Your story</label>
-                <textarea className="form-control" rows="5" type="text" name="description" ></textarea>
-            </div>
-            <div className="mb-3">
-                <label className="form-label fw-bold">Add an image</label>
-                <input className="form-control" type="file" name="image"></input>
-            </div>
-            <button className="btn btn-success">Submit</button>
-            </form>
-        </div>
-    )
+        )
+    }
+
+    
 }
 
 export default CreateBlog;

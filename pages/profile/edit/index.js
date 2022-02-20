@@ -28,7 +28,6 @@ const EditProfile = () => {
     const [uploadLoading, setUploadLoading] = useState(0);
     const [username, setUsername] = useState("");
     const [userDescription, setUserDescription] = useState("");
-    const [imageUrl, setImageUrl] = useState("");
 
     useEffect(() => {
         let isMounted = true;
@@ -61,26 +60,24 @@ const EditProfile = () => {
 
         }
         return () => isMounted = false;
-    },[userId, profileData, isSubmitedFirstTime, isSubmitedEdit, imageUrl]);
+    },[userId, profileData, isSubmitedFirstTime, isSubmitedEdit]);
 
 
     const onSubmitEditProfile = (e) => {
         e.preventDefault();
         const profilePath = "/profile/" + userId;
-        
         updateProfile(editProfileData.docId, editProfileData);
         setIsSubmitedEdit(false);
-        router.push(profilePath);
+        router.push(profilePath); 
                 
     }
-
     const onSubmitFirstTimeUser = (e) => {
         e.preventDefault();
         setProfileData({
+            ...profileData,
             "userId" : userId,
             "username" : username,
-            "userDescription" : userDescription,
-            "profilePicture" : imageUrl
+            "userDescription" : userDescription
         });
 
         setisSubmitedFirstTime(true);    
@@ -121,17 +118,22 @@ const EditProfile = () => {
           (error) => {
             console.log(error);
           },
-          getDownloadURL(uploadTask.snapshot.ref).then((url) => { 
-            setEditProfileData({
-                ...editProfileData,
-                "profilePicture" : url
-            });
+            await getDownloadURL(uploadTask.snapshot.ref).then((url) => { 
+                if(prevProfileExist === true){
+                    setEditProfileData({
+                        ...editProfileData,
+                        "profilePicture" : url
+                    });
+                } else {
+                    setProfileData({
+                        ...profileData,
+                        "profilePicture" : url
+                    });
+                }
             setStartLoading(false);
         })
         );
     }
-
-    /// fileref does not exist
 
     const showLoading = () => {
             if(uploadLoading !== 100){
