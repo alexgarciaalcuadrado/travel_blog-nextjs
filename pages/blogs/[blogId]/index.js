@@ -7,8 +7,9 @@ import defaultImage from "../../../public/blank-user-photo.png";
 
 const blog = (props) => {
     const router = useRouter();
-    const editPath = "/home/" + props.blogId.blogId + "/edit";
+    const editPath = "/blogs/" + props.blogId.blogId + "/edit";
     const [loading, setLoading] = useState(true);
+    const [deleteAction, setDeleteAction] = useState(false);
     const [blog, setBlog] = useState([]);
     const [user, setUser] = useState([]);
     const [userId, setUserId] = useState("");
@@ -16,6 +17,11 @@ const blog = (props) => {
     useEffect(() => {
         let isMounted = true; 
         if(isMounted){
+
+        if(deleteAction === true){
+            deleteBlog(blog.docId);
+            router.push("/blogs");
+        }
 
         if(typeof window !== "undefined") {
             if(localStorage.getItem("user")){
@@ -43,13 +49,13 @@ const blog = (props) => {
             } 
             
         });
-        }
         return () => { isMounted = false };
-    }, []);
+        }
+    }, [deleteAction]);
 
     const handleDelete = () => {
-        deleteBlog(blog.docId);
-        router.push("/");
+        setDeleteAction(true)
+        
     }
 
     const creatorActions = () => {
@@ -71,7 +77,6 @@ const blog = (props) => {
     } 
     
     const profilePath = "/profile/" + user.userId;
-
     return (
         <Fragment>
             {loading === true ?
@@ -83,7 +88,7 @@ const blog = (props) => {
                 <div className="page-background-setted-height">
                     <div className="blog">
                     <div className={`blog__box__user`}>
-                        <img className={`blog__profilePicture`} src={defaultImage.src} />
+                        <img className={`blog__profilePicture`} src={user.profilePicture === "" ? defaultImage.src : user.profilePicture} />
                         <p className={`blog__userCreated`}>Posted by: </p>
                         <Link href={{ pathname: profilePath}}><a>{user.username}</a></Link>
                     </div>

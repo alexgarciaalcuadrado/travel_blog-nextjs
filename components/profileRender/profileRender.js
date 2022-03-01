@@ -11,11 +11,13 @@ const Profile = ({queryUserId}) => {
     const router = useRouter();
     
     const { authUser, loading } = useAuth();
+    const [screenWidth, setScreenWidth] = useState(0);
     const [userId, setUserId] = useState("");
     const [existingPass, setExistingPass] = useState("");
     const [passwordDocId, setPasswordDocId] = useState([]);
     const [deleteError, setDeleteError] = useState("");
     const [showModal, setShowModal] = useState(false);
+    const [showModalResponsive, setShowModalResponsive] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [isUser, setIsUser] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -34,6 +36,7 @@ const Profile = ({queryUserId}) => {
       if (!loading && !authUser) router.push('/');
 
       if(typeof window !== "undefined") {
+        window.addEventListener("resize", () => setScreenWidth(window.innerWidth));
         if(localStorage.getItem("user")){
             setUserId(localStorage.getItem("user"));
             if(queryUserId){
@@ -94,10 +97,10 @@ const Profile = ({queryUserId}) => {
 
     }, [queryUserId ,userId, authUser, profileCreated, authUser]);
 
-
     const renderEdit = () => {router.push("/profile/edit");}
     const handleOpenModal = () => {setShowModal(true)};
     const handleCloseModal = () => {setShowModal(false)};
+    const handleOpenModalResponsive = () => {setShowModalResponsive(true)};
     const deleteUser = async (e) => {
         e.preventDefault();
         if(e.target[0].value ===  existingPass){
@@ -160,13 +163,17 @@ const Profile = ({queryUserId}) => {
                             {isUser && 
                             <div className={styles.profile__actions}>
                                 <button onClick={renderEdit} className="btn btn-dark">Edit profile</button>
+                                { screenWidth <= 500 ? 
+                                    <button type="button" onClick={handleOpenModalResponsive} className="btn btn-danger">Delete profile</button>
+                                : 
                                 <button type="button" onClick={handleOpenModal} className="btn btn-danger">Delete profile</button>
+                                }
                             </div>
                             }
                         </div>
 
                         <div>
-                        <Modal class="modal" show={showModal} onHide={handleCloseModal}>
+                        <Modal class="modal modalNotResponsive" show={showModal} onHide={handleCloseModal}>
                           <Modal.Header class="modal-header" closeButton>
                             <Modal.Title class="modal-title">Are you sure?</Modal.Title>
                           </Modal.Header>
@@ -198,6 +205,35 @@ const Profile = ({queryUserId}) => {
                           
                         </Modal.Body>
                         </Modal>
+                        <br></br>
+                        {showModalResponsive === true ?
+                        <div className="responsiveModal">
+                          <h3 className="text-danger">Are you sure?</h3>
+                          <h5>Once you delete your profile, all your blogs will be deleted <span className="text-danger">permanently</span>.</h5>
+                          <h5 className="fw-light">In order to continue, please write your password again</h5>
+                          <form onSubmit={deleteUser}>
+                            <div class="mb-3">
+                              <label for="passwordInput" class="form-label">Password</label>
+                              <input id="passwordInput" class="form-control" type="password"/>
+                            </div>
+                            {deleteLoading === true ?
+                                (
+                                <div class="spinner-border" role="status">
+                                  <span class="visually-hidden">Loading...</span>
+                                </div>
+                                )
+                                :
+                                null
+                            }    
+                            <p>{deleteError}</p>
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" className="btn btn-danger">Delete profile</button>
+                            </div>
+                          </form>
+
+                        </div>
+                        : null
+                        }
                         </div>
                     </div>
                 )

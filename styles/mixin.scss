@@ -1,5 +1,12 @@
 @import "../styles/variables.scss";
 
+@mixin flex-centered-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 @mixin text-gradient {
     background-clip: text;
     -webkit-background-clip: text;
@@ -37,6 +44,11 @@
 @mixin breakpoint($point){
     @if $point == screen-big{
         @media (max-width : $screen-big){
+            @content
+        }
+    };
+    @if $point == screen-big-medium {
+        @media (max-width : $screen-big-medium ){
             @content
         }
     };

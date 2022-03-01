@@ -1,0 +1,42 @@
+@import "../../styles/mixin.scss";
+
+.footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 1rem;
+    background-color: #90d291;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+
+    @include breakpoint(screen-big){
+        flex-direction: column;
+    }
+
+    @include breakpoint(screen-medium-small){
+        padding: 5px;
+    }
+
+    div{
+        text-align: center;
+    }
+
+    p{
+        @include breakpoint(screen-big){
+            border: 0px;
+            border-bottom: 1px solid;
+            border-image: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(57,122,46,1) 50%, rgba(255,255,255,0) 100%);
+            border-image-slice: 1;
+        } 
+
+        @include breakpoint(screen-medium-small){
+            font-size: 14px;
+        } 
+    }
+
+    a{
+        color: #bc4749;
+        text-decoration: none;
+    }
+}

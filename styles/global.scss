@@ -1,9 +1,12 @@
 @import "../styles/variables.scss";
 @import "../styles/mixin.scss";
 
+ul{
+    padding: 0;
+}
 
 .layout{
-    background: url(../public/backgroundImage.jpg) no-repeat center center fixed;
+    background: url(../public/backgroundImages/backgroundImage.jpg) no-repeat center center fixed;
     @include background-image-setting;
     font-family: 'Raleway', sans-serif;
     height: max-content;
@@ -16,25 +19,29 @@
 }
 
 .page-background{
-    background-color: white;
+    background-color: #f3f3f3;
     border-radius: 5px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
     padding: 2rem;
 
     @include breakpoint(screen-small){
         border-radius: 0;
-        padding: 1rem;
+        padding: 0;
     }
 }
 
 .page-background-setted-height{
     height: 100vh;
-    background-color: white;
+    background-color: #f3f3f3;
     border-radius: 5px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
     padding: 2rem;
 
     @include breakpoint(screen-small){
         border-radius: 0;
-        padding: 1rem;
+        padding: 0;
     }
 }
 
@@ -44,6 +51,14 @@
     grid-template-rows: repeat(5, min-content);
     grid-column-gap: 3px;
     grid-row-gap: 10px;
+    background-color: #f3f3f3;
+
+    &__displaybox{
+        -webkit-box-shadow: 1px 2px 7px -2px #000000; 
+        box-shadow: 1px 2px 7px -2px #000000;
+        margin: 0 0 2rem 0;
+        padding: 1rem;
+    }
 
     @include breakpoint(screen-small){
         margin: 1rem;
@@ -199,4 +214,17 @@
     margin-bottom: 1rem;
     border-bottom: solid 1px;
     border-image: linear-gradient(276deg, rgba(248,255,248,0) 0%, rgba(0,255,0,1) 51%, rgba(59,251,27,0) 100%) 27;
+}
+
+.modalNotResponsive{
+    @include breakpoint(screen-medium-small){
+        display: none;
+    }
+}
+
+.responsiveModal{
+    display: none;
+    @include breakpoint(screen-medium-small){
+        display: inline-block;
+    }
 }

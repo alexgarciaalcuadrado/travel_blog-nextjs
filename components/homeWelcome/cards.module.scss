@@ -1,0 +1,191 @@
+@import "../../styles/mixin.scss";
+
+
+.flexCenterContainer{
+    @include flex-centered-container;
+}
+
+.cards{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, min-content);
+    grid-gap: 50px;
+    margin-bottom: 1rem;
+
+    @include breakpoint(screen-big){
+        grid-gap: 20px;
+    }
+
+    @include breakpoint(screen-big-medium){
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    @include breakpoint(screen-medium){
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    div:nth-child(1) {
+        grid-area: 1 / 1 / 2 / 2; 
+
+        @include breakpoint(screen-big-medium){
+            grid-area: 2 / 3 / 3 / 5;        
+        } 
+
+        @include breakpoint(screen-medium){
+            grid-area: 1 / 2 / 2 / 3;
+        }
+    }
+
+    div:nth-child(2) {
+        grid-area: 1 / 2 / 2 / 3;
+
+        @include breakpoint(screen-big-medium){
+            grid-area: 1 / 2 / 2 / 4;         
+        }
+
+        @include breakpoint(screen-medium){
+            grid-area: 2 / 2 / 3 / 3; 
+        }
+    }
+
+    div:nth-child(3) {
+        grid-area: 1 / 3 / 2 / 4;
+            
+        @include breakpoint(screen-big-medium){
+            grid-area: 1 / 4 / 2 / 6;
+        } 
+        
+        @include breakpoint(screen-medium){
+            grid-area: 3 / 2 / 4 / 3; 
+        }
+    }
+
+}
+
+
+
+.card{
+    background-color: transparent;
+    width: 20rem;
+    height: 27rem;
+    perspective: 1000px;
+    
+    @include breakpoint(screen-big){
+        width: 19rem;
+    }
+
+    @include breakpoint(screen-medium-small){
+        width: 16rem;
+    }
+
+    &__container{
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+        
+    }
+
+    &__icon{
+        height: 7rem;
+    }
+
+    &__title{
+        margin: 2rem 1rem;
+        backdrop-filter: blur(3px);
+        border-radius: 17px;
+        overflow: hidden;
+        h3{
+            color: white;
+            font-weight: 100;
+            font-size: 2.5rem;
+            font-style: italic;
+
+            @include breakpoint(screen-medium-small){
+                font-size: 2rem;
+            }
+        }
+        
+    }
+
+    &:hover .card__container{
+        transform: rotateY(180deg);
+    }
+
+
+    &__front{
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: yellow;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden; 
+        backface-visibility: hidden;
+        
+
+        &__1{
+            @include flex-centered-container;
+            height: 100%;
+            background:linear-gradient(0deg, rgba(4,110,10,0.9612219887955182) 0%, rgba(79,219,75,0.7399334733893557) 57%, rgba(119,255,109,0.41220238095238093) 100%), url(../../public/cardImages/card-image-1.jpg) no-repeat center center;
+            @include background-image-setting;
+        }
+
+        &__2{
+            @include flex-centered-container;
+            height: 100%;
+            background:linear-gradient(0deg, rgba(0,168,113,0.9780287114845938) 0%, rgba(75,219,198,0.7399334733893557) 57%, rgba(109,252,255,0.41220238095238093) 100%), url(../../public/cardImages/card-image-2.jpg) no-repeat center center;
+            @include background-image-setting;
+        }
+
+        &__3{
+            @include flex-centered-container;
+            height: 100%;
+            background:linear-gradient(0deg, rgba(168,48,0,0.9780287114845938) 0%, rgba(210,87,46,0.7399334733893557) 57%, rgba(255,73,0,0.2777485994397759) 100%), url(../../public/cardImages/card-image-3.jpg) no-repeat center center;
+            @include background-image-setting;
+        }
+    }
+
+    &__back{
+        border-radius: 10px;
+        overflow: hidden;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden; 
+        backface-visibility: hidden;
+        transform: rotateY(180deg);
+
+        &__1{
+            @include flex-centered-container;
+            height: 100%;
+            background: url(../../public/cardImages/card-image-1.jpg) no-repeat center center;
+            @include background-image-setting;
+        }
+
+        &__2{
+            @include flex-centered-container;
+            height: 100%;
+            background: url(../../public/cardImages/card-image-2.jpg) no-repeat center center;
+            @include background-image-setting;
+        }
+
+        &__3{
+            @include flex-centered-container;
+            height: 100%;
+            background: url(../../public/cardImages/card-image-3.jpg) no-repeat center center;
+            @include background-image-setting;
+        }
+
+        &__button{
+            border-radius: 20px;
+            width: 12rem;
+            height: 46px;
+            font-size: 21px;
+        }
+
+        
+    }
+}

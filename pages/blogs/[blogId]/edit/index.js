@@ -1,9 +1,8 @@
 import { Fragment, useEffect, useState } from "react";
 import { useAuth } from "../../../../auth/authUserProvider";
 import { onSnapshot, query, where } from 'firebase/firestore';
-import { blogsColRef} from "../../../../firebase";
+import { blogsColRef, updateBlog} from "../../../../firebase";
 import { useRouter } from "next/router";
-import { updateBlog } from "../../../../firebase";
 
 const Edit = (props) => {
     const router = useRouter();
@@ -31,7 +30,7 @@ const Edit = (props) => {
         if(isSubmited){
             updateBlog(blog.docId, newBlog);
             setIsSubmited(false);
-            router.push("/"); 
+            router.push("/blogs"); 
         }
     }
     return () => { isMounted = false };

@@ -105,6 +105,10 @@ const EditProfile = () => {
         }
     }
 
+    const getUrl = (snap) => { 
+            
+    }
+
     const onChangeHandlerFile = async (e) => {
         const file = e.target.files[0];
         const fileRef = ref(storage, `/profImages/${userId}`);
@@ -118,21 +122,21 @@ const EditProfile = () => {
           (error) => {
             console.log(error);
           },
-            await getDownloadURL(uploadTask.snapshot.ref).then((url) => { 
-                if(prevProfileExist === true){
-                    setEditProfileData({
-                        ...editProfileData,
-                        "profilePicture" : url
-                    });
-                } else {
-                    setProfileData({
-                        ...profileData,
-                        "profilePicture" : url
-                    });
-                }
-            setStartLoading(false);
-        })
-        );
+          () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => { 
+            if(prevProfileExist === true){
+                setEditProfileData({
+                    ...editProfileData,
+                    "profilePicture" : url
+                });
+            } else {
+                setProfileData({
+                    ...profileData,
+                    "profilePicture" : url
+                });
+            }
+        setStartLoading(false);
+        })})
     }
 
     const showLoading = () => {

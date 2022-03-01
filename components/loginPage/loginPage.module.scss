@@ -42,10 +42,7 @@
     }
 
     &__box{
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        justify-content: center;
+        @include flex-centered-container;
 
         label{
             align-self: flex-start;

@@ -1,13 +1,13 @@
 import {Fragment} from "react";
 import HomeWelcome from "../components/homeWelcome/homeWelcome";
-import BlogRender from "../components/blogRender/blogRender";
+import Cards from "../components/homeWelcome/cards";
 
 const Home = () => {
     return (
         <Fragment>
             <div className="page-background">
             <HomeWelcome /> 
-            <BlogRender/>
+            <Cards />
             </div>
         </Fragment>
     )

@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import {useRouter} from "next/router";
 import { useAuth } from "../../auth/authUserProvider";
 import { signUserOut } from "../../firebase";
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from "react-bootstrap/Nav";
+import Container from 'react-bootstrap/Container';
+
 import styles from "../navbar/navbar.module.scss";
 
-const Navbar = () => {
+const ResponsiveNavbar = () => {
     const router = useRouter();
 
     const { authUser, loading } = useAuth();
@@ -37,63 +40,67 @@ const Navbar = () => {
     const navbar = () => {
         if(isLogged){
             return(
-                <nav className={`navbar navbar-expand-lg navbar-light bg-light ${styles.navbarCustom}`}>
-                    <div className="container-fluid">
-                      <a className={`navbar-brand ${styles.navbarCustom__brand}`} href="#">TravelPin</a>
-                      <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                      </button>
-                      <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li className="nav-item">
-                            <span className="nav-link active">
-                              <Link href="/"><a className={styles.navbarCustom__anchor}>Go to home page</a></Link>
-                            </span>
-                          </li>
-                          <li className="nav-item">
-                            <span className="nav-link active">
-                              <Link href={`/profile/${userId}`}><a className={styles.navbarCustom__anchor}>Profile</a></Link>
-                            </span>
-                          </li>
-                          <li className="nav-item">
-                            <span className="nav-link active">
-                              <Link href="/createBlog"><a className={styles.navbarCustom__anchor}>Post your own story</a></Link>
-                            </span>
-                          </li>
-                        </ul>
-                        <form className="d-flex">
-                          <button className="btn btn-outline-danger" onClick={ signOut }>Log out</button>
-                        </form>
-                      </div>
-                    </div>
-                </nav>
-                
+              <Navbar  className={`navbar navbar-expand-lg navbar-light bg-light ${styles.navbarCustom}`} collapseOnSelect expand="lg">
+                <Container>
+                <Navbar.Brand className={`navbar-brand ${styles.navbarCustom__brand}`} href="/">TravelPin</Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                  <Nav className="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <Nav.Link className={styles.navbarCustom__anchor} href="/">
+                    <span className="nav-link active">
+                    Go to home page
+                    </span>
+                    </Nav.Link>
+                    <Nav.Link className={styles.navbarCustom__anchor} href="/blogs">
+                    <span className="nav-link active">
+                    Read all the blogs
+                    </span>
+                    </Nav.Link>
+                    <Nav.Link className={styles.navbarCustom__anchor} href="/createBlog">
+                    <span className="nav-link active">
+                    Post your own story
+                    </span>
+                    </Nav.Link>
+                    <Nav.Link className={styles.navbarCustom__anchor} href={`/profile/${userId}`}>
+                    <span className="nav-link active">
+                    <b>Profile</b>
+                    </span>
+                    </Nav.Link>
+                  </Nav>
+                  <form className="d-flex">
+                    <button className="btn btn-outline-danger" onClick={ signOut }>Log out</button>
+                  </form>
+                </Navbar.Collapse>
+                </Container>
+              </Navbar>
             )
         } else {
             return (
-                <nav className={`navbar navbar-expand-lg navbar-light bg-light ${styles.navbarCustom}`}>
-                    <div className="container-fluid">
-                      <a className={`navbar-brand ${styles.navbarCustom__brand}`} href="#">TravelPin</a>
-                      <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                      </button>
-                      <div className="collapse navbar-collapse " id="navbarSupportedContent">
-                        <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                          <li className="nav-item">
-                            <span className="nav-link active">
-                              <Link href="/"><a className={styles.navbarCustom__anchor}>Go to home page</a></Link>
-                            </span>
-                          </li>
-                          <li className="nav-item">
-                          <span className="nav-link active">
-                            <Link href="/login"><a className={styles.navbarCustom__anchor}>Log in to public blogs</a></Link>
-                          </span> 
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                </nav>
-                
+              <Navbar  className={`navbar navbar-expand-lg navbar-light bg-light ${styles.navbarCustom}`} collapseOnSelect expand="lg">
+                <Container>
+                <Navbar.Brand className={`navbar-brand ${styles.navbarCustom__brand}`} href="/">TravelPin</Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                  <Nav className="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <Nav.Link className={styles.navbarCustom__anchor} href="/">
+                    <span className="nav-link active">
+                    Go to home page
+                    </span>
+                    </Nav.Link>
+                    <Nav.Link className={styles.navbarCustom__anchor} href="/blogs">
+                    <span className="nav-link active">
+                    Read all the blogs
+                    </span>
+                    </Nav.Link>
+                    <Nav.Link className={styles.navbarCustom__anchor} href="/login">
+                    <span className="nav-link active">
+                    Log in to public blogs
+                    </span>
+                    </Nav.Link>
+                  </Nav>
+                </Navbar.Collapse>
+                </Container>
+              </Navbar>
             )
         }
     }
@@ -103,4 +110,4 @@ const Navbar = () => {
 
 
 
-export default Navbar;
+export default ResponsiveNavbar;

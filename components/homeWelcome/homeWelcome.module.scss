@@ -1,12 +1,17 @@
 @import "../../styles/mixin.scss";
 
 .home{
-    margin-bottom: 3rem;
+    @include flex-centered-container;
+    margin-bottom: 1rem;
     text-align: center;
+    background: url(../../public/backgroundImages/circleDesign.png) no-repeat center center fixed;
+    @include background-image-setting;
 
     @include breakpoint(screen-small){
-        background: url(../../public/backgroundImagePhoneSize.jpg) no-repeat center center fixed;
+        background: url(../../public/backgroundImages/backgroundImagePhoneSize.jpg) no-repeat center center fixed;
         @include background-image-setting;
+        height: 30rem;
+        justify-content: space-evenly;
     }
 
     span{
@@ -14,19 +19,48 @@
         background: rgb(0,155,255);
         background: linear-gradient(87deg, rgba(0,155,255,1) 0%, rgba(60,255,184,1) 45%, rgba(57,235,28,1) 100%);
         @include text-gradient;
+        
     }
 
     h1{
         font-weight: 100;
-        font-size: 4rem;
+        font-size: 7rem;
         padding: 1rem;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: black;
+        letter-spacing: 2px;
+        -webkit-transition: all 1s ease;
+        -moz-transition: all 1s ease;
+        -o-transition: all 1s ease;
+        transition: all 1s ease;
+
+        &:hover{
+            letter-spacing: 5px;
+        }
+        
 
         @include breakpoint(screen-medium){
-            font-size: 3rem;
+            font-size: 4rem;
             padding: 0;
         }
 
         @include breakpoint(screen-small){
+            display: none;
+        }
+        
+    }
+
+    h2{
+        font-weight: 100;
+        font-size: 4rem;
+
+        @include breakpoint(screen-medium){
+            font-size: 2rem;
+            padding: 0;
+        }
+
+        @include breakpoint(screen-small){
+            font-size: 3rem;
             color: white;
         }
     }
@@ -37,9 +71,10 @@
         line-height: 3rem;
 
         @include breakpoint(screen-small){
-            line-height: 2.5rem;
+            line-height: 1.5rem;
             color: white;
             padding: 10px;
         }
+
     }
 }

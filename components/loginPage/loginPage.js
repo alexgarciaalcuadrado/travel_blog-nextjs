@@ -5,7 +5,7 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword
   } from "firebase/auth";
-import { addDoc, onSnapshot, query, where, doc, getDoc } from "firebase/firestore"; 
+import { addDoc } from "firebase/firestore"; 
 import {auth, passColRef, db} from "../../firebase";
 import {encryptPassword} from "../../crypto";
 import styles from "../loginPage/loginPage.module.scss";
@@ -15,7 +15,6 @@ const Login = () => {
     const router = useRouter();
     const [userId, setUserId] = useState("");
     const [loginErrorMessage, setLoginErrorMessage] = useState("");
-    const [prevPassExist, setPrevPassExist] = useState(false);
     const [createAccountErrorMessage, setCreateAccountErrorMessage] = useState("");
 
     useEffect(() => {
@@ -34,17 +33,6 @@ const Login = () => {
         };
         
     }, []);
-
-    /* const setPasswordToHash = async (passwordToHash) => {
-        const hashedPassword = encryptPassword(passwordToHash);
-        await addDoc(passColRef, {
-            userId : userId,
-            password : hashedPassword
-        });
-        router.push(`/profile/${userId}`);
-        
-    }; */
-
     return (
         <div className={styles.container}>
         <div className={styles.login}>

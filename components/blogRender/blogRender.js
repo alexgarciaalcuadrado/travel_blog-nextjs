@@ -35,7 +35,7 @@ const BlogRender = () => {
     const currentBlogs = blogs.slice(indexOfFirstBlog, indexOfLastBlog);
 
     const renderBlogs = currentBlogs.map((blog) => {
-        return <Blog blog={blog} path={"/home/" + blog.blogId} users={users}/>
+        return <Blog blog={blog} path={"/blogs/" + blog.blogId} users={users}/>
       });
 
     const pageNumbers = [];

@@ -27,6 +27,7 @@ const Blog = ({blog, path, users}) => {
     const profilePath = "/profile/" + userCreator.userId;
     
     return (
+    <div className="blog__displaybox">    
     <div key={blog.blogId} className={`blog`}>
         <div className={`blog__box__user`}>
             <img className={`blog__profilePicture`} src={userImage}></img>
@@ -49,7 +50,7 @@ const Blog = ({blog, path, users}) => {
                 }
             }}><a>See the whole story</a></Link>
         </div>
-    
+    </div>
     </div>
     )
 }

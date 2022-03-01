@@ -3,12 +3,15 @@ import { useRouter } from "next/router";
 import {v4 as uuidv4} from 'uuid';
 import { onSnapshot, query, where  } from 'firebase/firestore';
 import { addBlog, usersColRef } from "../../firebase";
+import { useAuth } from "../../auth/authUserProvider";
+
 
 const CreateBlog = () => {
     const router = useRouter();
 
+    const { authUser, loading } = useAuth();
     const [userId, setUserId] = useState("");
-    const [userProfileExist, setUserProfileExist] = useState(true);
+    const [userProfileExist, setUserProfileExist] = useState(false);
     const [isSubmited, setIsSubmited] = useState(false);
     const [newBlog, setNewBlog] = useState({
         "creatorId" : "",
@@ -21,9 +24,12 @@ const CreateBlog = () => {
     useEffect(() => {
         let isMounted = true; 
         if(isMounted){
+        if (!loading && !authUser) router.push('/');
+
         if(typeof window !== "undefined") {
             if(localStorage.getItem("user")){
-                setUserId(localStorage.getItem("user"))
+                setUserId(localStorage.getItem("user"));
+                
             } else {
                 console.log("User was not found")
             }
@@ -32,22 +38,22 @@ const CreateBlog = () => {
         const q = query(usersColRef, where("userId", "==", userId));
             onSnapshot(q, (snapshot) => { 
             const user = snapshot.docs.map((doc) => {return {...doc.data(), docId : doc.id }});
-            if (!user.length){
-                setUserProfileExist(false);
+            if (user.length){
+                setUserProfileExist(true);
             } 
-             
             });
 
         if(isSubmited){
             addBlog(newBlog);
             setIsSubmited(false);
-            router.push("/"); 
+            router.push("/blogs"); 
         }
-        }
-
         return () => { isMounted = false };
 
-    }, [isSubmited, newBlog])
+        }
+
+
+    }, [authUser, isSubmited, newBlog, userId])
 
     const submitHandler = (e) => {
         e.preventDefault();
